@@ -3,7 +3,7 @@ const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.expand();
   tg.ready();
-  // Sync with Telegram theme if needed (the CSS uses prefers-color-scheme)
+  // CSS уже учитывает тему через prefers-color-scheme
 }
 
 /* --- DOM refs --- */
@@ -26,7 +26,7 @@ const $btnCloseAbout = el('btn-close-about');
 const $img = el('card-img');
 const $ttl = el('card-title');
 const $msg = el('card-msg');
-const $btnSend = el('btn-send'); // добавлено
+const $btnSend = el('btn-send'); // кнопка "Отправить в чат"
 const itemTpl = document.getElementById('item-tpl');
 
 let DECK = [];
@@ -69,13 +69,9 @@ function show(section) {
   [$home, $card, $list].forEach(s => s.classList.add('hidden'));
   section.classList.remove('hidden');
 }
+/** делаем из относительного пути абсолютный https-URL для Telegram */
 function absoluteImageUrl(rel) {
-  try {
-    const u = new URL(rel);
-    return u.href;
-  } catch {
-    return `${location.origin}${rel.replace(/^\./, '')}`;
-  }
+  return new URL(rel, location.href).href; // корректно учтёт /angel_cards/
 }
 
 /* --- Render --- */
@@ -88,7 +84,7 @@ function renderCard(card) {
   S.pushHistory({ id: card.id, title: card.title, image: card.image, ts: Date.now() });
   show($card);
 }
-function renderList(kind='history') {
+function renderList(kind = 'history') {
   $listWrap.innerHTML = '';
   const data = S.read(kind === 'history' ? S.kHistory : S.kFav);
   $listTitle.textContent = kind === 'history' ? 'История' : 'Избранное';
@@ -131,7 +127,7 @@ $btnFav.onclick = () => {
 };
 $btnShare.onclick = () => LAST_CARD && shareCard(LAST_CARD);
 
-/* --- Отправка карты в чат (новый блок) --- */
+/* --- Отправка карты в чат --- */
 if ($btnSend) {
   $btnSend.onclick = () => {
     if (!LAST_CARD || !tg) return;
@@ -145,7 +141,7 @@ if ($btnSend) {
       }
     };
     tg.sendData(JSON.stringify(payload));
-    tg.close(); // сворачивает мини-апп после отправки
+    tg.close(); // свернёт webapp после отправки
   };
 }
 
