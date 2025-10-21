@@ -131,20 +131,21 @@ $btnShare.onclick = () => LAST_CARD && shareCard(LAST_CARD);
 if ($btnSend) {
   $btnSend.onclick = () => {
     if (!LAST_CARD || !tg) return;
+    const imgUrl = absoluteImageUrl(LAST_CARD.image);
+    console.log('Отправляем изображение:', imgUrl); // 🔍 вот тут увидим URL
     const payload = {
       type: 'send_card',
       card: {
         id: LAST_CARD.id,
         title: LAST_CARD.title,
         message: LAST_CARD.message,
-        image: absoluteImageUrl(LAST_CARD.image)
+        image: imgUrl
       }
     };
     tg.sendData(JSON.stringify(payload));
-    tg.close(); // свернёт webapp после отправки
+    tg.close();
   };
 }
-
 $btnHistory.onclick = () => renderList('history');
 $btnFavList.onclick = () => renderList('fav');
 $btnBack.onclick = () => show($home);
