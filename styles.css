@@ -1,0 +1,86 @@
+:root {
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #666;
+  --primary: #111111;
+  --card-bg: #fafafa;
+  --border: #e7e7e7;
+}
+
+html, body { margin:0; padding:0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.container { max-width: 720px; margin: 0 auto; padding: 12px 16px 24px; }
+
+.topbar { display: flex; align-items: center; gap: 8px; }
+.topbar h1 { flex: 1; font-size: 18px; margin: 0; }
+
+.primary, .secondary, .ghost {
+  border: 1px solid var(--fg);
+  background: var(--bg);
+  color: var(--fg);
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.primary { background: var(--fg); color: var(--bg); }
+.secondary { background: var(--card-bg); }
+.ghost { border-color: var(--border); color: var(--fg); background: transparent; }
+.small { font-size: 12px; padding: 8px 10px; }
+
+.hint { color: var(--muted); text-align: center; margin: 24px 0; }
+#home { display: grid; justify-items: center; gap: 16px; margin-top: 24px; }
+
+#card .card-wrap {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+}
+#card img { width: 100%; border-radius: 12px; display: block; }
+#card h2 { margin: 12px 0 6px; font-size: 18px; }
+.message { color: var(--fg); white-space: pre-wrap; }
+
+.actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+
+.list-wrap { display: grid; gap: 8px; }
+.item {
+  display: grid; grid-template-columns: 72px 1fr; gap: 12px;
+  align-items: center; border: 1px solid var(--border);
+  border-radius: 12px; padding: 8px;
+}
+.item .thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; }
+.item .ttl { font-weight: 600; }
+.item .dt { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+.foot { margin-top: 18px; display: flex; justify-content: center; }
+
+.hidden { display: none !important; }
+
+/* Модалка */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.25); display: grid; place-items: center; }
+.modal-card {
+  max-width: 560px; width: calc(100% - 32px);
+  background: var(--bg); color: var(--fg);
+  border: 1px solid var(--border); border-radius: 16px; padding: 16px;
+}
+
+/* Адаптация под мини-экраны */
+@media (max-width: 420px) {
+  .actions { grid-template-columns: 1fr; }
+}
+
+/* Темизация от Telegram (тёмная тема) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f10;
+    --fg: #f2f2f2;
+    --muted: #9a9a9a;
+    --primary: #f2f2f2;
+    --card-bg: #16171a;
+    --border: #26272b;
+  }
+}

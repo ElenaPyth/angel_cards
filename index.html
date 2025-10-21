@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Карты с посланиями — Ангельский Друг</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app" class="container">
+    <header class="topbar">
+      <h1>Карты с посланиями</h1>
+      <button id="btn-history" class="ghost">История</button>
+      <button id="btn-fav" class="ghost">Избранное</button>
+    </header>
+
+    <main id="main">
+      <section id="home">
+        <p class="hint">Нажми, чтобы вытянуть карту дня.</p>
+        <button id="btn-draw" class="primary">Вытянуть карту</button>
+      </section>
+
+      <section id="card" class="hidden">
+        <div class="card-wrap">
+          <img id="card-img" alt="Карта" />
+          <h2 id="card-title"></h2>
+          <p id="card-msg" class="message"></p>
+        </div>
+
+        <div class="actions">
+          <button id="btn-again" class="primary">Ещё раз</button>
+          <button id="btn-favorite" class="secondary">В избранное</button>
+          <button id="btn-send" class="secondary">Отправить в чат</button>
+          <button id="btn-share" class="ghost">Поделиться</button>
+        </div>
+      </section>
+
+      <section id="list" class="hidden">
+        <h2 id="list-title">История</h2>
+        <div id="list-wrap" class="list-wrap"></div>
+        <button id="btn-back" class="ghost">Назад</button>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <button id="btn-about" class="ghost small">О проекте</button>
+    </footer>
+  </div>
+
+  <template id="item-tpl">
+    <div class="item">
+      <img class="thumb" />
+      <div class="meta">
+        <div class="ttl"></div>
+        <div class="dt"></div>
+      </div>
+    </div>
+  </template>
+
+  <div id="about-modal" class="modal hidden">
+    <div class="modal-card">
+      <h3>О проекте</h3>
+      <p>Я твой Ангельский Друг. Это мягкая практика настройки внимания и чувствительности. Не медицина, не диагностика.</p>
+      <button id="btn-close-about" class="primary">Понятно</button>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
