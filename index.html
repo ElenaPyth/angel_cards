@@ -16,18 +16,19 @@
     </header>
 
     <main id="main">
+      <!-- Домашний экран -->
       <section id="home">
         <p class="hint">Нажми, чтобы вытянуть карту дня.</p>
         <button id="btn-draw" class="primary">Вытянуть карту</button>
       </section>
 
+      <!-- Экран карточки -->
       <section id="card" class="hidden">
         <div class="card-wrap">
           <img id="card-img" alt="Карта" />
           <h2 id="card-title"></h2>
           <p id="card-msg" class="message"></p>
         </div>
-
         <div class="actions">
           <button id="btn-again" class="primary">Ещё раз</button>
           <button id="btn-favorite" class="secondary">В избранное</button>
@@ -36,8 +37,12 @@
         </div>
       </section>
 
+      <!-- История / Избранное -->
       <section id="list" class="hidden">
         <h2 id="list-title">История</h2>
+        <div class="list-actions">
+          <button id="btn-clear" class="ghost hidden">Очистить историю</button>
+        </div>
         <div id="list-wrap" class="list-wrap"></div>
         <button id="btn-back" class="ghost">Назад</button>
       </section>
@@ -48,27 +53,19 @@
     </footer>
   </div>
 
+  <!-- Шаблон элемента списка (карточка в Истории/Избранном) -->
   <template id="item-tpl">
-   <section id="list" class="hidden">
-  <h2 id="list-title">История</h2>
-  <div class="list-actions">
-    <button id="btn-clear" class="ghost hidden">Очистить историю</button>
-  </div>
-  <div id="list-wrap" class="list-wrap"></div>
-  <button id="btn-back" class="ghost">Назад</button>
-</section>
-
-<template id="item-tpl">
-  <div class="item" data-id="">
-    <img class="thumb" />
-    <div class="meta">
-      <div class="ttl"></div>
-      <div class="dt"></div>
+    <div class="item" data-id="">
+      <img class="thumb" alt="" />
+      <div class="meta">
+        <div class="ttl"></div>
+        <div class="dt"></div>
+      </div>
+      <button class="del hidden" type="button" title="Удалить из избранного">×</button>
     </div>
-    <button class="del hidden" title="Удалить из избранного">×</button>
-  </div>
-</template>
+  </template>
 
+  <!-- Модалка "О проекте" -->
   <div id="about-modal" class="modal hidden">
     <div class="modal-card">
       <h3>О проекте</h3>
