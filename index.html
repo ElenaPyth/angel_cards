@@ -49,14 +49,25 @@
   </div>
 
   <template id="item-tpl">
-    <div class="item">
-      <img class="thumb" />
-      <div class="meta">
-        <div class="ttl"></div>
-        <div class="dt"></div>
-      </div>
+   <section id="list" class="hidden">
+  <h2 id="list-title">История</h2>
+  <div class="list-actions">
+    <button id="btn-clear" class="ghost hidden">Очистить историю</button>
+  </div>
+  <div id="list-wrap" class="list-wrap"></div>
+  <button id="btn-back" class="ghost">Назад</button>
+</section>
+
+<template id="item-tpl">
+  <div class="item" data-id="">
+    <img class="thumb" />
+    <div class="meta">
+      <div class="ttl"></div>
+      <div class="dt"></div>
     </div>
-  </template>
+    <button class="del hidden" title="Удалить из избранного">×</button>
+  </div>
+</template>
 
   <div id="about-modal" class="modal hidden">
     <div class="modal-card">
