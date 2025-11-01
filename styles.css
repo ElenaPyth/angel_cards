@@ -1,212 +1,109 @@
-:root{
-  --bg:#ffffff;
-  --fg:#111111;
-  --muted:#666;
-  --primary:#111111;
-  --card-bg:#fafafa;
-  --border:#e7e7e7;
+/* =========================
+   Tesei Angels — styles.css
+   ========================= */
 
-  /* доп. токены */
-  --radius:14px;
-  --ring:#11111122;
-}
-
-html,body{margin:0;padding:0}
-body{
-  background:var(--bg);
-  color:var(--fg);
-  font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
-.container{max-width:720px;margin:0 auto;padding:12px 16px 24px}
-
-/* ---------- Типографика ---------- */
-h1,h2{font-weight:700;letter-spacing:.2px}
-h1{font-size:20px;margin:0}
-h2{font-size:19px;margin:12px 0 6px}
-.message{color:var(--fg);white-space:pre-wrap;font-size:16px}
-
-/* ---------- Топбар ---------- */
-.topbar{display:flex;align-items:center;gap:8px}
-.topbar h1{flex:1}
-
-/* ---------- Кнопки ---------- */
-.primary,.secondary,.ghost{
-  appearance:none;
-  border:1px solid var(--border);
-  background:var(--bg);
-  color:var(--fg);
-  padding:12px 16px;
-  border-radius:var(--radius);
-  cursor:pointer;
-  transition:transform .06s ease,box-shadow .12s ease,background .12s ease,border-color .12s ease,opacity .12s ease;
-}
-.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.secondary{background:var(--card-bg)}
-.ghost{background:transparent}
-.small{font-size:12px;padding:8px 10px}
-
-.primary:hover{filter:brightness(1.05)}
-.secondary:hover{background:#f2f2f2}
-.ghost:hover{background:#00000008}
-.primary:active,.secondary:active,.ghost:active{transform:translateY(1px)}
-.primary:focus-visible,.secondary:focus-visible,.ghost:focus-visible{
-  outline:none; box-shadow:0 0 0 3px var(--ring)
-}
-
-/* ---------- Домашний экран ---------- */
-.hint{color:var(--muted);text-align:center;margin:24px 0}
-#home{display:grid;justify-items:center;gap:16px;margin-top:24px}
-
-/* ---------- Карточка ---------- */
-/* чёрная подложка у карты */
-#card .card-wrap{
-  background:#000; /* всегда чисто чёрный бэк под изображением */
-  border:none;
-  border-radius:18px;
-  padding:12px;
-}
-#card img{
-  width:100%;
-  display:block;
-  border-radius:12px;
-}
-/* текстовые блоки после изображения — на обычном фоне */
-#card .card-wrap h2,
-#card .card-wrap .message{
-  background:var(--bg);
-  color:var(--fg);
-  border-radius:12px;
-  padding:12px 14px;
-  margin-top:12px;
-  box-shadow:0 1px 0 rgba(0,0,0,.02);
-}
-
-.actions{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:8px;
-  margin-top:12px;
-}
-
-/* ---------- История / Избранное ---------- */
-.list-actions{display:flex;justify-content:flex-end;margin:4px 0 8px}
-.list-wrap{display:grid;gap:8px}
-.item{
-  position:relative;
-  display:grid;grid-template-columns:72px 1fr;gap:12px;
-  align-items:center;
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:8px;
-  background:var(--bg);
-}
-.item .thumb{
-  width:72px;height:72px;object-fit:cover;border-radius:10px;
-  background:#000; /* мини-превью тоже с чёрной подложкой */
-}
-.item .ttl{font-weight:600}
-.item .dt{color:var(--muted);font-size:12px;margin-top:4px}
-
-/* иконка удаления в избранном */
-.item .del{
-  position:absolute;top:6px;right:6px;
-  width:28px;height:28px;line-height:26px;
-  border-radius:50%;
-  border:1px solid var(--border);
-  background:transparent;
-  color:var(--muted);
-  display:inline-grid;place-items:center;
-  cursor:pointer;
-  transition:background .12s ease,transform .06s ease,opacity .12s ease;
-}
-.item .del:hover{background:var(--card-bg);color:var(--fg)}
-.item .del:active{transform:scale(.96)}
-
-.foot{margin-top:18px;display:flex;justify-content:center}
-
-.hidden{display:none !important}
-
-/* ---------- Модалка ---------- */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.25);display:grid;place-items:center}
-.modal-card{
-  max-width:560px;width:calc(100% - 32px);
-  background:var(--bg);color:var(--fg);
-  border:1px solid var(--border);border-radius:16px;padding:16px;
-}
-
-/* ---------- Мобилка ---------- */
-@media (max-width:420px){
-  .actions{grid-template-columns:1fr}
-}
-
-/* ---------- Тёмная тема (из Telegram) ---------- */
-@media (prefers-color-scheme:dark){
-  :root{
-    --bg:#0f0f10;
-    --fg:#f2f2f2;
-    --muted:#9a9a9a;
-    --primary:#f2f2f2;
-    --card-bg:#16171a;
-    --border:#26272b;
-    --ring:#96a0ff33;
-  }
-  .secondary:hover{background:#1d1f24}
-  .ghost:hover{background:#ffffff0a}
-}
-
-/* ===== THEME — Tesei Angels miniapp (в стиле сайта) ===== */
+/* --------- Токены темы (как на сайте) --------- */
 :root{
   --bg:#0B0018;
   --text:#F6F3FF;
   --muted:#D6C5FF;
   --accent:#FFAF3C;
   --accent2:#FFD903;
-  --card:#20043B;    /* верх градиента карточек */
-  --card2:#2B0A4C;   /* низ градиента карточек */
+
+  --card:#20043B;      /* верх карт/карточек */
+  --card2:#2B0A4C;     /* низ */
   --border:rgba(255,212,149,.28);
+
+  --radius:14px;
+  --ring:#96a0ff33;
 }
 
-/* Фон всего миниаппа + мягкие сияния, как на сайте */
-html, body{height:100%;}
+html,body{height:100%;margin:0;padding:0}
+
+/* Фон всего мини-аппа — фирменные сияния */
 body{
   color:var(--text);
+  font:16px/1.6 Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
   background:
     radial-gradient(1100px 520px at 12% 10%, rgba(255,217,3,.08), transparent 55%),
     radial-gradient(1200px 600px at 85% -10%, rgba(255,175,60,.12), transparent 60%),
     var(--bg);
-  font-family: Montserrat, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
+.container{max-width:720px;margin:0 auto;padding:12px 16px 24px}
 
-/* ===== Хедер/кнопки верхнего уровня ===== */
-.topbar, .header{background:transparent!important; border:none;}
-.btn, button{
-  --glow: 0 0 0 rgba(255,217,3,0);
-  background:
-    linear-gradient(180deg, #32145f, #2b0a4c);
-  color:var(--text);
+/* ---------- Типографика ---------- */
+h1,h2{font-weight:800;letter-spacing:.2px;text-shadow:0 0 14px rgba(255,217,3,.10)}
+h1{font-size:20px;margin:0}
+h2{font-size:19px;margin:12px 0 6px}
+.message{color:#EFE9FF;white-space:pre-wrap;font-size:16px;line-height:1.85}
+
+/* ---------- Топбар ---------- */
+.topbar{display:flex;align-items:center;gap:8px}
+.topbar h1{flex:1}
+
+/* ---------- Кнопки (в едином стиле сайта) ---------- */
+.primary,.secondary,.ghost{
+  appearance:none;
   border:1px solid rgba(255,255,255,.08);
-  border-radius:14px;
-  padding:.72rem 1rem;
-  transition:.25s ease;
+  background:linear-gradient(180deg, #32145f, #2b0a4c);
+  color:var(--text);
+  padding:12px 16px;
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:transform .06s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease,opacity .12s ease;
   box-shadow:0 8px 22px rgba(8,0,30,.35), inset 0 0 0 1px rgba(255,255,255,.04);
 }
-.btn:hover{
-  transform:translateY(-1px);
-  box-shadow:0 12px 28px rgba(8,0,30,.45), 0 0 22px rgba(255,217,3,.08);
-}
-.btn-primary, #btn-draw, #btn-again{
+.primary{
   background: linear-gradient(180deg, var(--accent), #F59C1A);
   color:#2b0a00;
   border-color: rgba(255,217,3,.65);
   text-shadow:0 1px 0 rgba(255,255,255,.35);
 }
-.btn-primary:hover, #btn-draw:hover, #btn-again:hover{
-  box-shadow:0 10px 26px rgba(255,175,60,.35), 0 0 24px rgba(255,217,3,.25);
+.secondary{background:linear-gradient(180deg,#2d1253,#220b44)}
+.ghost{background:transparent;border-color:rgba(255,255,255,.12)}
+
+.small{font-size:12px;padding:8px 10px}
+
+.primary:hover{box-shadow:0 10px 26px rgba(255,175,60,.35), 0 0 24px rgba(255,217,3,.20)}
+.secondary:hover{box-shadow:0 10px 22px rgba(8,0,30,.45)}
+.ghost:hover{background:#ffffff0a}
+.primary:active,.secondary:active,.ghost:active{transform:translateY(1px)}
+.primary:focus-visible,.secondary:focus-visible,.ghost:focus-visible{
+  outline:none; box-shadow:0 0 0 3px var(--ring)
 }
 
-/* ===== Карточка просмотра (экран с картой) ===== */
+/* ---------- Домашний экран ---------- */
+#home{display:grid;justify-items:center;gap:16px;margin-top:24px}
+.hint{color:var(--muted);text-align:center;margin:10px 0 0}
+
+/* интро-текст и ссылки */
+.home-intro .lead{
+  max-width:720px;
+  margin:12px auto 10px;
+  color:var(--muted);
+  line-height:1.7;
+  text-align:center;
+}
+.home-hint{
+  margin: 6px 0 6px;
+  text-align: center;
+  color: var(--text);
+  opacity:.9;
+}
+.home-actions{ display:flex; justify-content:center; margin:6px 0 8px; }
+.home-links{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+
+/* лёгкий пульс для CTA */
+@keyframes pulseGlow{
+  0%,100%{ box-shadow:0 0 0 rgba(255,217,3,0); }
+  50%{ box-shadow:0 0 28px rgba(255,217,3,.25); }
+}
+#btn-draw{ animation:pulseGlow 3.6s ease-in-out infinite; }
+
+/* ---------- Экран «Карта» ---------- */
+/* общий контейнер карты со спиральным свечением */
 #card{
   background:
     radial-gradient(120% 140% at 100% 0%, rgba(255,217,3,.06), transparent 44%),
@@ -219,7 +116,7 @@ body{
   overflow:hidden;
 }
 
-/* Спиральное свечение вокруг контента (как в блоке «О наставнике») */
+/* спираль */
 #card::before, #card::after{
   content:""; position:absolute; inset:10px; border-radius:20px; pointer-events:none;
   -webkit-mask: radial-gradient(closest-side, #000 68%, transparent 100%);
@@ -242,45 +139,49 @@ body{
 }
 @keyframes spinA{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 
-/* --- Подложка под изображением карты: больше НЕ белая --- */
-/* Подстраиваемся под возможные контейнеры: любой «обёртке» даём фирменную подложку */
-#card .img-wrap,
-#card .card-media,
-#card .card-box,
-#card .media,
-#card .picture,
-#card .frame{
+/* обёртка изображения — НИКАКОГО белого/чёрного фона */
+#card .card-wrap{
   background:
-    linear-gradient(180deg, #2a0e4a, #21053d);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:18px;
-  padding:12px;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    radial-gradient(900px 420px at 10% 0%, rgba(255,217,3,.06), transparent 55%),
+    radial-gradient(1000px 520px at 90% -10%, rgba(255,175,60,.10), transparent 60%),
+    #0B0018;
+  border: 1px solid rgba(255,212,149,.25);
+  border-radius: 22px;
+  box-shadow: 0 18px 44px rgba(8,0,30,.55), inset 0 0 0 1px rgba(255,255,255,.05);
+  padding: clamp(12px, 2.3vw, 16px);
 }
-#card #card-img{
+#card img{
+  width:100%;
   display:block;
-  width:100%; height:auto;
-  border-radius:12px;
-  background:transparent; /* на случай, если у IMG было белое */
+  height:auto;
+  border-radius:14px;
 }
 
-/* Заголовок и текст карты */
-#card-title, #card .title, #card .h2, #card .h3, #card #card-title, #card .card-title{
-  color:var(--text);
-  text-shadow:0 0 14px rgba(255,217,3,.12);
-}
-#card #card-msg{
+/* заголовок и текст под картой — без белых «плашек» */
+#card .card-wrap h2,
+#card .card-wrap .message{
+  background:transparent;
   color:#EFE9FF;
-  line-height:1.85;
+  border-radius:0;
+  padding:12px 0 0;
+  margin-top:12px;
+  box-shadow:none;
 }
 
-/* Кнопки под картой */
-#btn-favorite{ background:linear-gradient(180deg, #31125a, #27094a); }
-#btn-favorite:hover{ box-shadow:0 10px 24px rgba(105,61,179,.35), 0 0 16px rgba(255,217,3,.10); }
-#btn-share{ background:linear-gradient(180deg, #2b0a4c, #24083f); }
-#btn-send{ background:linear-gradient(180deg, var(--accent), #f59c1a); color:#2b0a00; }
+/* заголовок сильнее */
+#card .card-wrap h2{ color:var(--text); text-shadow:0 0 14px rgba(255,217,3,.12); }
 
-/* ===== Списки (История / Избранное) ===== */
+/* панель действий под описанием */
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+
+/* ---------- История / Избранное ---------- */
+.list-actions{display:flex;justify-content:flex-end;margin:4px 0 8px}
+.list-wrap{display:grid;gap:8px}
 #list{
   background:
     radial-gradient(1000px 480px at 8% 0%, rgba(255,217,3,.08), transparent 50%),
@@ -290,36 +191,61 @@ body{
   box-shadow:0 18px 42px rgba(8,0,30,.45), inset 0 0 0 1px rgba(255,255,255,.04);
 }
 #list-title{ color:var(--text); }
+
 .item{
+  position:relative;
+  display:grid;grid-template-columns:72px 1fr;gap:12px;
+  align-items:center;
   background:linear-gradient(180deg, #241046, #1b0836);
   border:1px solid rgba(255,255,255,.06);
-  border-radius:14px;
+  border-radius:var(--radius);
+  padding:8px;
 }
-.item .ttl{ color:var(--text); }
-.item .dt{ color:var(--muted); }
-.item .del{
-  background:linear-gradient(180deg, #3a1440, #2a0e33);
-  border-color:rgba(255,255,255,.08);
+.item .thumb{
+  width:72px;height:72px;object-fit:cover;border-radius:10px;
+  background:#1a0f2d;
 }
-.item .thumb{ border-radius:10px; }
+.item .ttl{font-weight:700;color:var(--text)}
+.item .dt{color:var(--muted);font-size:12px;margin-top:4px}
 
-/* ===== Модал «О проекте» (если есть) ===== */
-#about-modal{
-  background:
-    radial-gradient(800px 380px at 80% -10%, rgba(255,175,60,.10), transparent 60%),
-    linear-gradient(180deg, #14022a, #0b0018);
-  color:var(--text);
+/* иконка удаления в избранном */
+.item .del{
+  position:absolute;top:6px;right:6px;
+  width:28px;height:28px;line-height:26px;
+  border-radius:50%;
   border:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg, #3a1440, #2a0e33);
+  color:#d7c9ff;
+  display:inline-grid;place-items:center;
+  cursor:pointer;
+  transition:background .12s ease,transform .06s ease,opacity .12s ease;
+}
+.item .del:hover{box-shadow:0 8px 18px rgba(8,0,30,.45)}
+.item .del:active{transform:scale(.96)}
+
+.foot{margin-top:18px;display:flex;justify-content:center}
+
+.hidden{display:none !important}
+
+/* ---------- Модалки («Чем я могу помочь…», Инструкции, Как пользоваться) ---------- */
+.modal{position:fixed;inset:0;background:rgba(11,0,24,.64);display:grid;place-items:center;z-index:1000}
+.modal-card,.modal__card{
+  max-width:800px;width:calc(100% - 32px);max-height:86vh;overflow:auto;
+  background:
+    radial-gradient(100% 140% at 100% 0%, rgba(255,217,3,.08), transparent 42%),
+    linear-gradient(180deg, var(--card), var(--card2));
+  color:#EFE9FF;
+  border:1px solid var(--border);border-radius:22px;padding:clamp(18px,3.4vw,28px);
   box-shadow:0 18px 42px rgba(8,0,30,.55), inset 0 0 0 1px rgba(255,255,255,.04);
 }
-
-/* Текстовые акценты */
-.muted{ color:var(--muted); }
-.accent{ color:var(--accent2); }
-
-/* Небольшой пульс для главных CTA */
-@keyframes pulseGlow{
-  0%,100%{ box-shadow:0 0 0 rgba(255,217,3,0); }
-  50%{ box-shadow:0 0 28px rgba(255,217,3,.25); }
+.modal-card h3,.modal__card h3{margin:0 0 10px;font-size:22px}
+.modal-card p,.modal__card p{line-height:1.75;margin:0 0 12px}
+.modal__close{
+  position:sticky; top:0; margin-left:auto; display:block;
+  background:transparent; border:0; color:var(--accent2); font-size:28px; line-height:1;
 }
-#btn-draw{ animation:pulseGlow 3.6s ease-in-out infinite; }
+
+/* ---------- Мобилка ---------- */
+@media (max-width:420px){
+  .actions{grid-template-columns:1fr}
+}
