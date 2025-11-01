@@ -36,8 +36,12 @@ const S = {
   get kFav() { return 'cards_fav_v1'; },
   read(key) { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } },
   write(key, list) { localStorage.setItem(key, JSON.stringify(list)); },
-  pushHistory(item) {
+  // добавление в историю без дублей подряд
+  addToHistory(item) {
     const list = S.read(S.kHistory);
+    if (list.length && String(list[0]?.id) === String(item.id)) {
+      return; // не дублируем последнюю открытую карту
+    }
     list.unshift(item);
     S.write(S.kHistory, list.slice(0, 200));
   },
@@ -88,8 +92,15 @@ function renderCard(card) {
   $img.alt = card.title;
   $ttl.textContent = card.title;
   $msg.textContent = card.message;
-  S.pushHistory({ id: card.id, title: card.title, image: card.image, ts: Date.now() });
   show($card);
+}
+
+// универсальный показ карты с управлением записи в историю
+function showCard(card, { track = true } = {}) {
+  renderCard(card);
+  if (track) {
+    S.addToHistory({ id: card.id, title: card.title, image: card.image, ts: Date.now() });
+  }
 }
 
 function renderList(kind = 'history') {
@@ -116,7 +127,7 @@ function renderList(kind = 'history') {
     }
     root.onclick = () => {
       const card = findCardById(it.id);
-      if (card) renderCard(card);
+      if (card) showCard(card, { track: false }); // не добавляем повторно в историю
     };
     $listWrap.appendChild(node);
   });
@@ -136,7 +147,7 @@ async function shareCard(card) {
 /* --- Events --- */
 $btnDraw.onclick = () => {
   const card = pickRandom(LAST_CARD?.id ?? null);
-  if (card) renderCard(card);
+  if (card) showCard(card, { track: true });
 };
 $btnAgain.onclick = $btnDraw.onclick;
 
