@@ -184,6 +184,23 @@ if (el('btn-about')) {
   $btnCloseAbout.onclick = () => $about.classList.add('hidden');
 }
 
+// --- новые DOM refs для модалок
+const $btnGuide = document.getElementById('btn-guide');
+const $btnHow   = document.getElementById('btn-how');
+const $guide    = document.getElementById('guide-modal');
+const $how      = document.getElementById('how-modal');
+const $btnCloseGuide = document.getElementById('btn-close-guide');
+const $btnCloseHow   = document.getElementById('btn-close-how');
+
+// Открытие
+if ($btnGuide) $btnGuide.onclick = () => $guide.classList.remove('hidden');
+if ($btnHow)   $btnHow.onclick   = () => $how.classList.remove('hidden');
+
+// Закрытие
+if ($btnCloseGuide) $btnCloseGuide.onclick = () => $guide.classList.add('hidden');
+if ($btnCloseHow)   $btnCloseHow.onclick   = () => $how.classList.add('hidden');
+
+
 /* --- Boot --- */
 (async function boot() {
   try {
