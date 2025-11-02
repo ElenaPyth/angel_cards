@@ -125,7 +125,8 @@ function renderList(kind = 'history') {
     }
     root.onclick = () => {
       const card = findCardById(it.id);
-      if (card) renderCard(card, false); // повторно открываем — не дублируем в истории
+      // ВАЖНО: открытие из избранного или истории НЕ добавляет запись в Историю
+      if (card) renderCard(card, false);
     };
     $listWrap.appendChild(node);
   });
@@ -185,6 +186,7 @@ if ($btnCloseAbout) $btnCloseAbout.onclick = () => $about.classList.add('hidden'
   if (!m) return;
   m.addEventListener('click', (e) => { if (e.target === m) m.classList.add('hidden'); });
 });
+
 /* --- Boot --- */
 (async function boot() {
   try {
