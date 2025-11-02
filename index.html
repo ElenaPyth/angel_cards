@@ -5,39 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Карты с посланиями — Ангельский Друг</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- cache-buster -->
-  <link rel="stylesheet" href="./styles.css?v=2025-11-03-01-28" />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <div id="app" class="container">
     <header class="topbar">
       <h1>Карты с посланиями</h1>
-      <!-- Избранное перед Историей -->
-      <button id="btn-fav" class="ghost">Избранное</button>
-      <button id="btn-history" class="ghost">История</button>
+      <button id="btn-history" class="ghost btn">История</button>
+      <button id="btn-fav" class="ghost btn">Избранное</button>
     </header>
 
     <main id="main">
       <!-- Домашний экран -->
       <section id="home">
-        <p class="hint">Нажми, чтобы вытянуть карту дня.</p>
-        <button id="btn-draw" class="primary">Вытянуть карту</button>
+        <p class="lead">
+          Внимательно подумай о своём вопросе, задай его ангелам и позволь выпасть карте из колоды.
+          Читая значение каждой карты, отмечай свои мысли и чувства.
+        </p>
+
+        <p class="hint">Нажми, чтобы вытянуть карту дня</p>
+        <button id="btn-draw" class="btn btn-primary btn-lg">Вытянуть карту</button>
+
+        <div class="home-actions">
+          <button id="btn-how"   class="btn pill">Инструкция по работе с картами</button>
+          <button id="btn-guide" class="btn pill">Как пользоваться картами</button>
+          <button id="btn-help"  class="btn pill">Чем я могу помочь тебе</button>
+        </div>
       </section>
 
       <!-- Экран карточки -->
       <section id="card" class="hidden">
-        <div class="card-wrap">
+        <div class="card-media">
           <img id="card-img" alt="Карта" />
-          <h2 id="card-title"></h2>
+        </div>
+
+        <div class="card-content">
+          <h2 id="card-title" class="card-title"></h2>
           <p id="card-msg" class="message"></p>
         </div>
 
-        <!-- ПЕРЕСТАВИЛ: сначала «В избранное», потом «Ещё раз» -->
         <div class="actions">
-          <button id="btn-favorite" class="secondary">В избранное</button>
-          <button id="btn-again" class="primary">Ещё раз</button>
-          <button id="btn-send" class="secondary">Отправить в чат</button>
-          <button id="btn-share" class="ghost">Поделиться</button>
+          <button id="btn-again" class="btn btn-primary">Ещё раз</button>
+          <button id="btn-favorite" class="btn">В избранное</button>
+          <button id="btn-send" class="btn">Отправить в чат</button>
+          <button id="btn-share" class="btn ghost">Поделиться</button>
         </div>
       </section>
 
@@ -45,15 +56,15 @@
       <section id="list" class="hidden">
         <h2 id="list-title">История</h2>
         <div class="list-actions">
-          <button id="btn-clear" class="ghost hidden">Очистить историю</button>
+          <button id="btn-clear" class="btn ghost hidden">Очистить историю</button>
         </div>
         <div id="list-wrap" class="list-wrap"></div>
-        <button id="btn-back" class="ghost">Назад</button>
+        <button id="btn-back" class="btn ghost">Назад</button>
       </section>
     </main>
 
     <footer class="foot">
-      <button id="btn-about" class="ghost small">О проекте</button>
+      <button id="btn-about" class="btn ghost small">О проекте</button>
     </footer>
   </div>
 
@@ -69,16 +80,43 @@
     </div>
   </template>
 
-  <!-- Модалка "О проекте" -->
-  <div id="about-modal" class="modal hidden">
+  <!-- Модалка: Инструкция -->
+  <div id="modal-how" class="modal hidden">
     <div class="modal-card">
-      <h3>О проекте</h3>
-      <p>Я твой Ангельский Друг. Это мягкая практика настройки внимания и чувствительности. Не медицина, не диагностика.</p>
-      <button id="btn-close-about" class="primary">Понятно</button>
+      <button id="btn-close-how" class="modal-x" aria-label="Закрыть">✕</button>
+      <h3>Инструкция по работе с картами</h3>
+      <div class="modal-body">
+        <p>Ангелы рядом всегда, даже если ты их не замечаешь. Они уважают твою свободу воли — поэтому помощь приходит, когда ты просишь об этом.</p>
+        <p>Проси конкретно и коротко, будто вы одна команда. Так сигналы от высших сил доходят быстрее, а ответы легче распознать.</p>
+        <p>Когда просишь поддержки, жизнь становится легче: совпадения помогают, внутри спокойнее, появляется ясность следующего шага.</p>
+      </div>
     </div>
   </div>
 
-  <!-- cache-buster -->
-  <script src="./app.js?v=2025-11-03-01-28"></script>
+  <!-- Модалка: Как пользоваться -->
+  <div id="modal-guide" class="modal hidden">
+    <div class="modal-card">
+      <button id="btn-close-guide" class="modal-x" aria-label="Закрыть">✕</button>
+      <h3>Как пользоваться картами</h3>
+      <div class="modal-body">
+        <p>Карты — безопасный способ настроиться на высшие силы и услышать подсказку. Выпавшая карта резонирует с твоим запросом — так работает притяжение.</p>
+        <p>Когда стресс мешает слышать, карты обходят «шум» и помогают получить ясный ответ.</p>
+        <p><strong>Практика:</strong> подумай о вопросе, попроси поддержки, вытяни карту. Читая значение, отмечай мысли и чувства — в них твой ответ и шаг к действию.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка: О проекте / помощь -->
+  <div id="about-modal" class="modal hidden">
+    <div class="modal-card">
+      <button id="btn-close-about" class="modal-x" aria-label="Закрыть">✕</button>
+      <h3>Чем я могу помочь тебе</h3>
+      <div class="modal-body">
+        <p>Это мягкая практика внимательности и чувствительности. Здесь ты тренируешь контакт с собой и с высшими силами. Не медицина и не диагностика.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
 </body>
 </html>
