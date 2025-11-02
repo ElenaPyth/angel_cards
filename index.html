@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Карты с посланиями — Ангельский Друг</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="./styles.css" />
+  <!-- cache-buster -->
+  <link rel="stylesheet" href="./styles.css?v=2025-11-03-01-28" />
 </head>
 <body>
   <div id="app" class="container">
     <header class="topbar">
       <h1>Карты с посланиями</h1>
-      <!-- 1) Поменяли порядок: сначала Избранное, потом История -->
+      <!-- Избранное перед Историей -->
       <button id="btn-fav" class="ghost">Избранное</button>
       <button id="btn-history" class="ghost">История</button>
     </header>
@@ -30,9 +31,11 @@
           <h2 id="card-title"></h2>
           <p id="card-msg" class="message"></p>
         </div>
+
+        <!-- ПЕРЕСТАВИЛ: сначала «В избранное», потом «Ещё раз» -->
         <div class="actions">
-          <button id="btn-again" class="primary">Ещё раз</button>
           <button id="btn-favorite" class="secondary">В избранное</button>
+          <button id="btn-again" class="primary">Ещё раз</button>
           <button id="btn-send" class="secondary">Отправить в чат</button>
           <button id="btn-share" class="ghost">Поделиться</button>
         </div>
@@ -75,6 +78,7 @@
     </div>
   </div>
 
-  <script src="./app.js"></script>
+  <!-- cache-buster -->
+  <script src="./app.js?v=2025-11-03-01-28"></script>
 </body>
 </html>
