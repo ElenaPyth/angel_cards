@@ -11,8 +11,9 @@
   <div id="app" class="container">
     <header class="topbar">
       <h1>Карты с посланиями</h1>
-      <button id="btn-history" class="ghost btn">История</button>
+      <!-- «Избранное» стоит ПЕРЕД «Историей» -->
       <button id="btn-fav" class="ghost btn">Избранное</button>
+      <button id="btn-history" class="ghost btn">История</button>
     </header>
 
     <main id="main">
@@ -44,9 +45,10 @@
           <p id="card-msg" class="message"></p>
         </div>
 
+        <!-- «В избранное» идёт ПЕРВОЙ -->
         <div class="actions">
-          <button id="btn-again" class="btn btn-primary">Ещё раз</button>
           <button id="btn-favorite" class="btn">В избранное</button>
+          <button id="btn-again" class="btn btn-primary">Ещё раз</button>
           <button id="btn-send" class="btn">Отправить в чат</button>
           <button id="btn-share" class="btn ghost">Поделиться</button>
         </div>
@@ -80,7 +82,7 @@
     </div>
   </template>
 
-  <!-- Модалка: Инструкция -->
+  <!-- Модалки (как были) -->
   <div id="modal-how" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-how" class="modal-x" aria-label="Закрыть">✕</button>
@@ -93,7 +95,6 @@
     </div>
   </div>
 
-  <!-- Модалка: Как пользоваться -->
   <div id="modal-guide" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-guide" class="modal-x" aria-label="Закрыть">✕</button>
@@ -106,7 +107,6 @@
     </div>
   </div>
 
-  <!-- Модалка: О проекте / помощь -->
   <div id="about-modal" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-about" class="modal-x" aria-label="Закрыть">✕</button>
