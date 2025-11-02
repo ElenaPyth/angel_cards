@@ -11,29 +11,25 @@
   <div id="app" class="container">
     <header class="topbar">
       <h1>Карты с посланиями</h1>
-      <button id="btn-history" class="ghost">История</button>
-      <button id="btn-fav" class="ghost">Избранное</button>
+      <button id="btn-history" class="ghost btn">История</button>
+      <button id="btn-fav" class="ghost btn">Избранное</button>
     </header>
 
     <main id="main">
       <!-- Домашний экран -->
       <section id="home">
-        <div class="home-intro">
-          <p class="lead">
-            Внимательно подумай о своём вопросе, задай его ангелам и позволь
-            выпасть карте из колоды. Читая значение каждой карты, обращай
-            внимание на свои мысли и чувства.
-          </p>
-        </div>
+        <p class="lead">
+          Внимательно подумай о своём вопросе, задай его ангелам и позволь выпасть карте из колоды.
+          Читая значение каждой карты, отмечай свои мысли и чувства.
+        </p>
 
-        <p class="home-hint">Нажми, чтобы вытянуть карту дня</p>
+        <p class="hint-xl">Нажми, чтобы вытянуть карту дня</p>
+        <button id="btn-draw" class="btn btn-primary btn-xl">Вытянуть карту</button>
+
         <div class="home-actions">
-          <button id="btn-draw" class="primary">Вытянуть карту</button>
-        </div>
-
-        <div class="home-links">
-          <button id="btn-how" class="secondary">Инструкция по работе с картами</button>
-          <button id="btn-guide" class="secondary">Как пользоваться картами</button>
+          <button id="btn-instr" class="btn btn-ghost">Инструкция по работе с картами</button>
+          <button id="btn-howto" class="btn btn-ghost">Как пользоваться картами</button>
+          <button id="btn-about" class="btn btn-ghost">Чем я могу помочь тебе</button>
         </div>
       </section>
 
@@ -41,14 +37,15 @@
       <section id="card" class="hidden">
         <div class="card-wrap">
           <img id="card-img" alt="Карта" />
-          <h2 id="card-title"></h2>
+          <h2 id="card-title" class="card-title"></h2>
           <p id="card-msg" class="message"></p>
         </div>
+
         <div class="actions">
-          <button id="btn-again" class="primary">Ещё раз</button>
-          <button id="btn-favorite" class="secondary">В избранное</button>
-          <button id="btn-send" class="secondary">Отправить в чат</button>
-          <button id="btn-share" class="ghost">Поделиться</button>
+          <button id="btn-again" class="btn btn-primary">Ещё раз</button>
+          <button id="btn-favorite" class="btn">В избранное</button>
+          <button id="btn-send" class="btn">Отправить в чат</button>
+          <button id="btn-share" class="btn btn-ghost">Поделиться</button>
         </div>
       </section>
 
@@ -56,16 +53,12 @@
       <section id="list" class="hidden">
         <h2 id="list-title">История</h2>
         <div class="list-actions">
-          <button id="btn-clear" class="ghost hidden">Очистить историю</button>
+          <button id="btn-clear" class="btn btn-ghost hidden">Очистить историю</button>
         </div>
         <div id="list-wrap" class="list-wrap"></div>
-        <button id="btn-back" class="ghost">Назад</button>
+        <button id="btn-back" class="btn btn-ghost">Назад</button>
       </section>
     </main>
-
-    <footer class="foot">
-      <button id="btn-about" class="ghost small">Чем я могу помочь тебе</button>
-    </footer>
   </div>
 
   <!-- Шаблон элемента списка (карточка в Истории/Избранном) -->
@@ -80,50 +73,46 @@
     </div>
   </template>
 
-  <!-- Модалка "О проекте" (переименована кнопка в футере) -->
-  <div id="about-modal" class="modal hidden">
-    <div class="modal-card">
-      <button class="modal__close" id="btn-close-about" aria-label="Закрыть">×</button>
-      <h3>Чем я могу помочь тебе</h3>
-      <p>Я твой Ангельский Друг. Это мягкая практика настройки внимания и чувствительности. Не медицина и не диагностика. Здесь мы тренируем внимательность к себе, просим поддержки и учимся слышать ответы.</p>
-    </div>
-  </div>
-
   <!-- Модалка: Инструкция по работе с картами -->
-  <div id="how-modal" class="modal hidden">
-    <div class="modal__card">
-      <button class="modal__close" id="btn-close-how" aria-label="Закрыть">×</button>
-      <h3>Инструкция по работе с картами</h3>
-      <p>Ваши ангелы-хранители всегда с вами, даже если вы не замечаете их присутствия. Они стремятся по всем помогать вам. Однако вы обладаете свободой воли, поэтому ангелы могут оказать вам помощь только в том случае, если вы их попросите. Это могущественные и любящие посланники Бога, которым неведомы ограничения пространства и времени, поэтому они способны помогать вам во всех ваших делах – больших и малых.</p>
-      <p>Ещё раз повторю: прежде чем ангелам будет позволено прийти вам на помощь, вы должны обратиться к ним. Я проводила обширные исследования и многочисленные эксперименты, пытаясь понять, существует ли возможность обойти этот закон. Например, я предоставляла ангелам возможность во всём помогать мне на протяжении целого дня. Это не сработало, потому что ангелам нужно, чтобы мы конкретно объяснили им, в чём мы нуждаемся. Со временем я научилась общаться с ангелами, как будто мы одна команда.</p>
-      <p>Когда посланники Бога по вашей просьбе приходят вам на помощь, всё в жизни становится проще и светлее. Вам больше не нужно мучительно думать о том, как свести концы с концами, потому что в вашей жизни то и дело случаются чудесные совпадения, вы наполняетесь счастьем и душевным покоем. Я создала эту колоду карт, чтобы они каждый день напоминали вам о присутствии ангелов и их любви. Вы можете каждое утро выбирать карту и целый день носить её при себе, чтобы медитировать над наставлениями и помнить: ангелов надо просить о помощи, чтобы они могли её оказать.</p>
+  <div id="instr-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Инструкция по работе с картами</h3>
+        <button class="modal-close" data-close="instr">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Ангелы всегда рядом и готовы помогать, но у тебя есть свобода воли — проси. Обращайся конкретно, своими словами.</p>
+        <p>Остановись на минуту, сделай пару глубоких вдохов, попроси о поддержке и ясности — и вытяни карту. Дальше следуй подсказкам и своим ощущениям.</p>
+      </div>
     </div>
   </div>
 
   <!-- Модалка: Как пользоваться картами -->
-  <div id="guide-modal" class="modal hidden">
-    <div class="modal__card">
-      <button class="modal__close" id="btn-close-guide" aria-label="Закрыть">×</button>
-      <h3>Как пользоваться картами</h3>
-      <p>Карты — проверенный временем способ связи с ангелами и духовными наставниками. Это безопасный метод: карты ангелов притягивают только наполненную любовью Божественную энергию. Они действуют по закону притяжения: карта, которую вы «наугад» вытягиваете, резонирует с энергией вашего вопроса или мыслей — поэтому нередко выпадает одна и та же карта.</p>
-      <p>Когда вы особенно нуждаетесь в помощи, стресс может блокировать каналы связи. Карты создают непосредственный контакт, помогая обойти эмоциональную блокаду — так каждый человек может точно гадать для себя и других.</p>
-      <p><strong>Практика:</strong> подумай о своём вопросе, попроси поддержки ангелов и вытяни карту. Читая значение, отмечай мысли и чувства: именно в них — твой ответ и подсказка к действию.</p>
+  <div id="howto-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Как пользоваться картами</h3>
+        <button class="modal-close" data-close="howto">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Карты — безопасный способ настроиться на подсказки Высших сил. Выпавшая карта резонирует с твоим вопросом.</p>
+        <p><strong>Практика:</strong> сформулируй вопрос, попроси поддержки Высших сил, вытяни карту. Прочитай значение и отметь мысли/чувства — в них твой ответ и следующий шаг.</p>
+      </div>
     </div>
   </div>
 
-  <!-- Небольшие обработчики для новых модалок -->
-  <script>
-    (function(){
-      const q = (s)=>document.querySelector(s);
-      const on = (id, fn)=>{ const el = document.getElementById(id); if(el) el.addEventListener('click', fn); };
-
-      on('btn-how',   ()=> q('#how-modal')  .classList.remove('hidden'));
-      on('btn-guide', ()=> q('#guide-modal').classList.remove('hidden'));
-
-      on('btn-close-how',   ()=> q('#how-modal')  .classList.add('hidden'));
-      on('btn-close-guide', ()=> q('#guide-modal').classList.add('hidden'));
-    })();
-  </script>
+  <!-- Модалка: Чем я могу помочь тебе -->
+  <div id="help-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Чем я могу помочь тебе</h3>
+        <button class="modal-close" data-close="help">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Я рядом, чтобы поддержать тебя в работе с чувствительностью и практиками. Если нужен разбор ситуации, направление или аккуратная персональная рекомендация — напиши куратору в чате.</p>
+      </div>
+    </div>
+  </div>
 
   <script src="./app.js"></script>
 </body>
