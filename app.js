@@ -16,20 +16,15 @@ const $btnShare = el('btn-share');
 const $btnHistory = el('btn-history');
 const $btnFavList = el('btn-fav');
 const $btnBack = el('btn-back');
+const $btnAbout = el('about-modal') ? el('btn-about') : null;
+const $about = el('about-modal');
+const $btnCloseAbout = el('btn-close-about');
 const $img = el('card-img');
 const $ttl = el('card-title');
 const $msg = el('card-msg');
 const $btnSend = el('btn-send');
-const $btnClear = el('btn-clear');
+const $btnClear = el('btn-clear'); // появится после правки html
 const itemTpl = document.getElementById('item-tpl');
-
-/* modals/buttons */
-const $btnInstr = el('btn-instr');
-const $btnHowto = el('btn-howto');
-const $btnAbout = el('btn-about');
-const $modalInstr = el('instr-modal');
-const $modalHowto = el('howto-modal');
-const $modalHelp = el('help-modal');
 
 let DECK = [];
 let LAST_CARD = null;
@@ -86,13 +81,25 @@ function findCardById(id) {
 }
 
 /* --- Render --- */
-function renderCard(card) {
+/**
+ * Рендер карты.
+ * @param {object} card - объект карты
+ * @param {'draw'|'history'|'fav'} source - откуда открыли карту
+ *   draw  -> пользователь вытянул карту (нужно писать в Историю)
+ *   history/fav -> открыли из списков (НЕ писать в Историю)
+ */
+function renderCard(card, source = 'draw') {
   LAST_CARD = card;
   $img.src = card.image;
   $img.alt = card.title;
   $ttl.textContent = card.title;
   $msg.textContent = card.message;
-  S.pushHistory({ id: card.id, title: card.title, image: card.image, ts: Date.now() });
+
+  // 2) НЕ добавляем в историю, если карта открыта из Истории или Избранного
+  if (source === 'draw') {
+    S.pushHistory({ id: card.id, title: card.title, image: card.image, ts: Date.now() });
+  }
+
   show($card);
 }
 
@@ -120,7 +127,7 @@ function renderList(kind = 'history') {
     }
     root.onclick = () => {
       const card = findCardById(it.id);
-      if (card) renderCard(card);
+      if (card) renderCard(card, kind); // <-- передаём источник
     };
     $listWrap.appendChild(node);
   });
@@ -139,17 +146,17 @@ async function shareCard(card) {
 /* --- Events --- */
 $btnDraw.onclick = () => {
   const card = pickRandom(LAST_CARD?.id ?? null);
-  if (card) renderCard(card);
+  if (card) renderCard(card, 'draw');
 };
-$btnAgain && ($btnAgain.onclick = $btnDraw.onclick);
+$btnAgain.onclick = $btnDraw.onclick;
 
-$btnFav && ($btnFav.onclick = () => {
+$btnFav.onclick = () => {
   if (!LAST_CARD) return;
   S.pushFav({ id: LAST_CARD.id, title: LAST_CARD.title, image: LAST_CARD.image, ts: Date.now() });
   $btnFav.textContent = 'Добавлено ✓';
   setTimeout(() => $btnFav.textContent = 'В избранное', 900);
-});
-$btnShare && ($btnShare.onclick = () => LAST_CARD && shareCard(LAST_CARD));
+};
+$btnShare.onclick = () => LAST_CARD && shareCard(LAST_CARD);
 
 /* Отправка в чат */
 if ($btnSend) {
@@ -165,29 +172,17 @@ if ($btnSend) {
   };
 }
 
-$btnHistory && ($btnHistory.onclick = () => renderList('history'));
-$btnFavList && ($btnFavList.onclick = () => renderList('fav'));
-$btnBack && ($btnBack.onclick = () => show($home));
-$btnClear && ($btnClear.onclick = () => { S.clearHistory(); renderList('history'); });
+/* Табы списка */
+$btnHistory.onclick = () => renderList('history');
+$btnFavList.onclick = () => renderList('fav');
+$btnBack.onclick = () => show($home);
+if ($btnClear) $btnClear.onclick = () => { S.clearHistory(); renderList('history'); };
 
-/* Modals open/close */
-function openModal(modal){ modal?.classList.remove('hidden'); }
-function closeModal(modal){ modal?.classList.add('hidden'); }
-
-$btnInstr && ($btnInstr.onclick = () => openModal($modalInstr));
-$btnHowto && ($btnHowto.onclick = () => openModal($modalHowto));
-$btnAbout && ($btnAbout.onclick = () => openModal($modalHelp));
-
-document.addEventListener('click', (e) => {
-  const target = e.target;
-  if (target.matches('.modal')) closeModal(target);
-  if (target.matches('.modal-close')) {
-    const key = target.getAttribute('data-close');
-    if (key === 'instr') closeModal($modalInstr);
-    if (key === 'howto') closeModal($modalHowto);
-    if (key === 'help')  closeModal($modalHelp);
-  }
-});
+/* Модалка "О проекте" */
+if (el('btn-about')) {
+  el('btn-about').onclick = () => $about.classList.remove('hidden');
+  $btnCloseAbout.onclick = () => $about.classList.add('hidden');
+}
 
 /* --- Boot --- */
 (async function boot() {
