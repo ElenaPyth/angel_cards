@@ -16,15 +16,26 @@ const $btnShare = el('btn-share');
 const $btnHistory = el('btn-history');
 const $btnFavList = el('btn-fav');
 const $btnBack = el('btn-back');
-const $btnAbout = el('about-modal') ? el('btn-about') : null;
-const $about = el('about-modal');
-const $btnCloseAbout = el('btn-close-about');
 const $img = el('card-img');
 const $ttl = el('card-title');
 const $msg = el('card-msg');
 const $btnSend = el('btn-send');
-const $btnClear = el('btn-clear'); // появится после правки html
+const $btnClear = el('btn-clear');
 const itemTpl = document.getElementById('item-tpl');
+
+/* Home extra buttons & modals */
+const $btnHow   = el('btn-how');
+const $btnGuide = el('btn-guide');
+const $btnHelp  = el('btn-help');
+
+const $modalHow   = el('modal-how');
+const $modalGuide = el('modal-guide');
+const $about      = el('about-modal');
+
+const $btnCloseHow   = el('btn-close-how');
+const $btnCloseGuide = el('btn-close-guide');
+const $btnAbout      = el('btn-about');
+const $btnCloseAbout = el('btn-close-about');
 
 let DECK = [];
 let LAST_CARD = null;
@@ -63,16 +74,13 @@ function fmtDate(ts) {
 function pickRandom(exceptId = null) {
   if (!DECK.length) return null;
   let idx = Math.floor(Math.random() * DECK.length);
-  if (DECK.length > 1 && exceptId != null && DECK[idx].id === exceptId) {
-    idx = (idx + 1) % DECK.length;
-  }
+  if (DECK.length > 1 && exceptId != null && DECK[idx].id === exceptId) idx = (idx + 1) % DECK.length;
   return DECK[idx];
 }
 function show(section) {
   [$home, $card, $list].forEach(s => s.classList.add('hidden'));
   section.classList.remove('hidden');
 }
-/** превращаем относительный путь в абсолютный https-URL */
 function absoluteImageUrl(rel) {
   return new URL(rel, location.href).href;
 }
@@ -81,25 +89,15 @@ function findCardById(id) {
 }
 
 /* --- Render --- */
-/**
- * Рендер карты.
- * @param {object} card - объект карты
- * @param {'draw'|'history'|'fav'} source - откуда открыли карту
- *   draw  -> пользователь вытянул карту (нужно писать в Историю)
- *   history/fav -> открыли из списков (НЕ писать в Историю)
- */
-function renderCard(card, source = 'draw') {
+function renderCard(card, addToHistory = true) {
   LAST_CARD = card;
   $img.src = card.image;
   $img.alt = card.title;
   $ttl.textContent = card.title;
   $msg.textContent = card.message;
-
-  // 2) НЕ добавляем в историю, если карта открыта из Истории или Избранного
-  if (source === 'draw') {
+  if (addToHistory) {
     S.pushHistory({ id: card.id, title: card.title, image: card.image, ts: Date.now() });
   }
-
   show($card);
 }
 
@@ -127,7 +125,7 @@ function renderList(kind = 'history') {
     }
     root.onclick = () => {
       const card = findCardById(it.id);
-      if (card) renderCard(card, kind); // <-- передаём источник
+      if (card) renderCard(card, false); // повторно открываем — не дублируем в истории
     };
     $listWrap.appendChild(node);
   });
@@ -144,10 +142,7 @@ async function shareCard(card) {
 }
 
 /* --- Events --- */
-$btnDraw.onclick = () => {
-  const card = pickRandom(LAST_CARD?.id ?? null);
-  if (card) renderCard(card, 'draw');
-};
+$btnDraw.onclick = () => { const card = pickRandom(LAST_CARD?.id ?? null); if (card) renderCard(card); };
 $btnAgain.onclick = $btnDraw.onclick;
 
 $btnFav.onclick = () => {
@@ -163,27 +158,33 @@ if ($btnSend) {
   $btnSend.onclick = () => {
     if (!LAST_CARD || !tg) return;
     const imgUrl = absoluteImageUrl(LAST_CARD.image);
-    const payload = {
-      type: 'send_card',
-      card: { id: LAST_CARD.id, title: LAST_CARD.title, message: LAST_CARD.message, image: imgUrl }
-    };
+    const payload = { type: 'send_card', card: { id: LAST_CARD.id, title: LAST_CARD.title, message: LAST_CARD.message, image: imgUrl } };
     tg.sendData(JSON.stringify(payload));
     tg.close();
   };
 }
 
-/* Табы списка */
+/* Навигация списков */
 $btnHistory.onclick = () => renderList('history');
 $btnFavList.onclick = () => renderList('fav');
 $btnBack.onclick = () => show($home);
 if ($btnClear) $btnClear.onclick = () => { S.clearHistory(); renderList('history'); };
 
-/* Модалка "О проекте" */
-if (el('btn-about')) {
-  el('btn-about').onclick = () => $about.classList.remove('hidden');
-  $btnCloseAbout.onclick = () => $about.classList.add('hidden');
-}
+/* Модалки главного экрана */
+if ($btnHow)   $btnHow.onclick   = () => $modalHow.classList.remove('hidden');
+if ($btnGuide) $btnGuide.onclick = () => $modalGuide.classList.remove('hidden');
+if ($btnHelp)  $btnHelp.onclick  = () => $about.classList.remove('hidden');
 
+if ($btnCloseHow)   $btnCloseHow.onclick   = () => $modalHow.classList.add('hidden');
+if ($btnCloseGuide) $btnCloseGuide.onclick = () => $modalGuide.classList.add('hidden');
+if ($btnAbout)      $btnAbout.onclick      = () => $about.classList.remove('hidden');
+if ($btnCloseAbout) $btnCloseAbout.onclick = () => $about.classList.add('hidden');
+
+/* Закрытие модалок по клику на фон */
+[$modalHow, $modalGuide, $about].forEach(m => {
+  if (!m) return;
+  m.addEventListener('click', (e) => { if (e.target === m) m.classList.add('hidden'); });
+});
 /* --- Boot --- */
 (async function boot() {
   try {
