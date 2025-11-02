@@ -16,15 +16,20 @@ const $btnShare = el('btn-share');
 const $btnHistory = el('btn-history');
 const $btnFavList = el('btn-fav');
 const $btnBack = el('btn-back');
-const $btnAbout = el('about-modal') ? el('btn-about') : null;
-const $about = el('about-modal');
-const $btnCloseAbout = el('btn-close-about');
 const $img = el('card-img');
 const $ttl = el('card-title');
 const $msg = el('card-msg');
 const $btnSend = el('btn-send');
-const $btnClear = el('btn-clear'); // появится после правки html
+const $btnClear = el('btn-clear');
 const itemTpl = document.getElementById('item-tpl');
+
+/* modals/buttons */
+const $btnInstr = el('btn-instr');
+const $btnHowto = el('btn-howto');
+const $btnAbout = el('btn-about');
+const $modalInstr = el('instr-modal');
+const $modalHowto = el('howto-modal');
+const $modalHelp = el('help-modal');
 
 let DECK = [];
 let LAST_CARD = null;
@@ -36,12 +41,8 @@ const S = {
   get kFav() { return 'cards_fav_v1'; },
   read(key) { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } },
   write(key, list) { localStorage.setItem(key, JSON.stringify(list)); },
-  // добавление в историю без дублей подряд
-  addToHistory(item) {
+  pushHistory(item) {
     const list = S.read(S.kHistory);
-    if (list.length && String(list[0]?.id) === String(item.id)) {
-      return; // не дублируем последнюю открытую карту
-    }
     list.unshift(item);
     S.write(S.kHistory, list.slice(0, 200));
   },
@@ -87,20 +88,12 @@ function findCardById(id) {
 /* --- Render --- */
 function renderCard(card) {
   LAST_CARD = card;
-  console.log('[CARD]', card.title, '->', card.image); // помогает увидеть связку title↔image
   $img.src = card.image;
   $img.alt = card.title;
   $ttl.textContent = card.title;
   $msg.textContent = card.message;
+  S.pushHistory({ id: card.id, title: card.title, image: card.image, ts: Date.now() });
   show($card);
-}
-
-// универсальный показ карты с управлением записи в историю
-function showCard(card, { track = true } = {}) {
-  renderCard(card);
-  if (track) {
-    S.addToHistory({ id: card.id, title: card.title, image: card.image, ts: Date.now() });
-  }
 }
 
 function renderList(kind = 'history') {
@@ -127,11 +120,10 @@ function renderList(kind = 'history') {
     }
     root.onclick = () => {
       const card = findCardById(it.id);
-      if (card) showCard(card, { track: false }); // не добавляем повторно в историю
+      if (card) renderCard(card);
     };
     $listWrap.appendChild(node);
   });
-  // показать/скрыть кнопку очистки истории
   if ($btnClear) $btnClear.classList.toggle('hidden', kind !== 'history' || data.length === 0);
   show($list);
 }
@@ -147,17 +139,17 @@ async function shareCard(card) {
 /* --- Events --- */
 $btnDraw.onclick = () => {
   const card = pickRandom(LAST_CARD?.id ?? null);
-  if (card) showCard(card, { track: true });
+  if (card) renderCard(card);
 };
-$btnAgain.onclick = $btnDraw.onclick;
+$btnAgain && ($btnAgain.onclick = $btnDraw.onclick);
 
-$btnFav.onclick = () => {
+$btnFav && ($btnFav.onclick = () => {
   if (!LAST_CARD) return;
   S.pushFav({ id: LAST_CARD.id, title: LAST_CARD.title, image: LAST_CARD.image, ts: Date.now() });
   $btnFav.textContent = 'Добавлено ✓';
   setTimeout(() => $btnFav.textContent = 'В избранное', 900);
-};
-$btnShare.onclick = () => LAST_CARD && shareCard(LAST_CARD);
+});
+$btnShare && ($btnShare.onclick = () => LAST_CARD && shareCard(LAST_CARD));
 
 /* Отправка в чат */
 if ($btnSend) {
@@ -168,38 +160,34 @@ if ($btnSend) {
       type: 'send_card',
       card: { id: LAST_CARD.id, title: LAST_CARD.title, message: LAST_CARD.message, image: imgUrl }
     };
-    console.log('[SEND to bot]', payload);
     tg.sendData(JSON.stringify(payload));
     tg.close();
   };
 }
 
-$btnHistory.onclick = () => renderList('history');
-$btnFavList.onclick = () => renderList('fav');
-$btnBack.onclick = () => show($home);
-if ($btnClear) $btnClear.onclick = () => { S.clearHistory(); renderList('history'); };
+$btnHistory && ($btnHistory.onclick = () => renderList('history'));
+$btnFavList && ($btnFavList.onclick = () => renderList('fav'));
+$btnBack && ($btnBack.onclick = () => show($home));
+$btnClear && ($btnClear.onclick = () => { S.clearHistory(); renderList('history'); });
 
-if (el('btn-about')) {
-  el('btn-about').onclick = () => $about.classList.remove('hidden');
-  $btnCloseAbout.onclick = () => $about.classList.add('hidden');
-}
+/* Modals open/close */
+function openModal(modal){ modal?.classList.remove('hidden'); }
+function closeModal(modal){ modal?.classList.add('hidden'); }
 
-// --- новые DOM refs для модалок
-const $btnGuide = document.getElementById('btn-guide');
-const $btnHow   = document.getElementById('btn-how');
-const $guide    = document.getElementById('guide-modal');
-const $how      = document.getElementById('how-modal');
-const $btnCloseGuide = document.getElementById('btn-close-guide');
-const $btnCloseHow   = document.getElementById('btn-close-how');
+$btnInstr && ($btnInstr.onclick = () => openModal($modalInstr));
+$btnHowto && ($btnHowto.onclick = () => openModal($modalHowto));
+$btnAbout && ($btnAbout.onclick = () => openModal($modalHelp));
 
-// Открытие
-if ($btnGuide) $btnGuide.onclick = () => $guide.classList.remove('hidden');
-if ($btnHow)   $btnHow.onclick   = () => $how.classList.remove('hidden');
-
-// Закрытие
-if ($btnCloseGuide) $btnCloseGuide.onclick = () => $guide.classList.add('hidden');
-if ($btnCloseHow)   $btnCloseHow.onclick   = () => $how.classList.add('hidden');
-
+document.addEventListener('click', (e) => {
+  const target = e.target;
+  if (target.matches('.modal')) closeModal(target);
+  if (target.matches('.modal-close')) {
+    const key = target.getAttribute('data-close');
+    if (key === 'instr') closeModal($modalInstr);
+    if (key === 'howto') closeModal($modalHowto);
+    if (key === 'help')  closeModal($modalHelp);
+  }
+});
 
 /* --- Boot --- */
 (async function boot() {
