@@ -11,10 +11,10 @@ const $listTitle = el('list-title');
 const $listWrap = el('list-wrap');
 const $btnDraw = el('btn-draw');
 const $btnAgain = el('btn-again');
-const $btnFav = el('btn-favorite');
+const $btnFav = el('btn-fav'); // теперь внизу
+const $btnFavorite = el('btn-favorite'); // "В избранное" вверху
 const $btnShare = el('btn-share');
 const $btnHistory = el('btn-history');
-const $btnFavList = el('btn-fav');
 const $btnBack = el('btn-back');
 const $img = el('card-img');
 const $ttl = el('card-title');
@@ -27,11 +27,9 @@ const itemTpl = document.getElementById('item-tpl');
 const $btnHow   = el('btn-how');
 const $btnGuide = el('btn-guide');
 const $btnHelp  = el('btn-help');
-
 const $modalHow   = el('modal-how');
 const $modalGuide = el('modal-guide');
 const $about      = el('about-modal');
-
 const $btnCloseHow   = el('btn-close-how');
 const $btnCloseGuide = el('btn-close-guide');
 const $btnAbout      = el('btn-about');
@@ -125,7 +123,6 @@ function renderList(kind = 'history') {
     }
     root.onclick = () => {
       const card = findCardById(it.id);
-      // ВАЖНО: открытие из избранного или истории НЕ добавляет запись в Историю
       if (card) renderCard(card, false);
     };
     $listWrap.appendChild(node);
@@ -146,12 +143,13 @@ async function shareCard(card) {
 $btnDraw.onclick = () => { const card = pickRandom(LAST_CARD?.id ?? null); if (card) renderCard(card); };
 $btnAgain.onclick = $btnDraw.onclick;
 
-$btnFav.onclick = () => {
+$btnFavorite.onclick = () => {
   if (!LAST_CARD) return;
   S.pushFav({ id: LAST_CARD.id, title: LAST_CARD.title, image: LAST_CARD.image, ts: Date.now() });
-  $btnFav.textContent = 'Добавлено ✓';
-  setTimeout(() => $btnFav.textContent = 'В избранное', 900);
+  $btnFavorite.textContent = 'Добавлено ✓';
+  setTimeout(() => $btnFavorite.textContent = 'В избранное', 900);
 };
+
 $btnShare.onclick = () => LAST_CARD && shareCard(LAST_CARD);
 
 /* Отправка в чат */
@@ -167,25 +165,18 @@ if ($btnSend) {
 
 /* Навигация списков */
 $btnHistory.onclick = () => renderList('history');
-$btnFavList.onclick = () => renderList('fav');
+$btnFav.onclick = () => renderList('fav');
 $btnBack.onclick = () => show($home);
 if ($btnClear) $btnClear.onclick = () => { S.clearHistory(); renderList('history'); };
 
-/* Модалки главного экрана */
+/* Модалки */
 if ($btnHow)   $btnHow.onclick   = () => $modalHow.classList.remove('hidden');
 if ($btnGuide) $btnGuide.onclick = () => $modalGuide.classList.remove('hidden');
 if ($btnHelp)  $btnHelp.onclick  = () => $about.classList.remove('hidden');
-
 if ($btnCloseHow)   $btnCloseHow.onclick   = () => $modalHow.classList.add('hidden');
 if ($btnCloseGuide) $btnCloseGuide.onclick = () => $modalGuide.classList.add('hidden');
 if ($btnAbout)      $btnAbout.onclick      = () => $about.classList.remove('hidden');
 if ($btnCloseAbout) $btnCloseAbout.onclick = () => $about.classList.add('hidden');
-
-/* Закрытие модалок по клику на фон */
-[$modalHow, $modalGuide, $about].forEach(m => {
-  if (!m) return;
-  m.addEventListener('click', (e) => { if (e.target === m) m.classList.add('hidden'); });
-});
 
 /* --- Boot --- */
 (async function boot() {
