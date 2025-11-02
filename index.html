@@ -11,9 +11,9 @@
   <div id="app" class="container">
     <header class="topbar">
       <h1>Карты с посланиями</h1>
-      <!-- «Избранное» стоит ПЕРЕД «Историей» -->
-      <button id="btn-fav" class="ghost btn">Избранное</button>
+      <!-- Вверху только История и В избранное -->
       <button id="btn-history" class="ghost btn">История</button>
+      <button id="btn-favorite" class="ghost btn">В избранное</button>
     </header>
 
     <main id="main">
@@ -45,9 +45,7 @@
           <p id="card-msg" class="message"></p>
         </div>
 
-        <!-- «В избранное» идёт ПЕРВОЙ -->
         <div class="actions">
-          <button id="btn-favorite" class="btn">В избранное</button>
           <button id="btn-again" class="btn btn-primary">Ещё раз</button>
           <button id="btn-send" class="btn">Отправить в чат</button>
           <button id="btn-share" class="btn ghost">Поделиться</button>
@@ -66,11 +64,13 @@
     </main>
 
     <footer class="foot">
+      <!-- Перенесено вниз -->
+      <button id="btn-fav" class="btn ghost small">Избранное</button>
       <button id="btn-about" class="btn ghost small">О проекте</button>
     </footer>
   </div>
 
-  <!-- Шаблон элемента списка (карточка в Истории/Избранном) -->
+  <!-- Шаблон элемента списка -->
   <template id="item-tpl">
     <div class="item" data-id="">
       <img class="thumb" alt="" />
@@ -82,7 +82,7 @@
     </div>
   </template>
 
-  <!-- Модалки (как были) -->
+  <!-- Модалки -->
   <div id="modal-how" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-how" class="modal-x" aria-label="Закрыть">✕</button>
