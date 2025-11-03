@@ -9,6 +9,9 @@ const $home = el('home');
 const $card = el('card');
 const $list = el('list');
 
+const $topbarHome = el('topbar-home');
+const $topbarCard = el('topbar-card');
+
 const $listTitle = el('list-title');
 const $listWrap = el('list-wrap');
 
@@ -18,11 +21,11 @@ const $btnAgain = el('btn-again');
 const $btnShare = el('btn-share');
 const $btnSend = el('btn-send');
 
-const $btnHistoryHome = el('btn-history');        // История на домашнем
-const $btnHistoryCard = el('btn-history-card');   // История на экране карты
+const $btnHistoryHome = el('btn-history');        // История (дом)
+const $btnHistoryCard = el('btn-history-card');   // История (в шапке экрана карты)
 
-const $btnFavOpen = el('btn-fav-open');           // Кнопка «Избранное» рядом с «Поделиться»
-const $btnFavorite = el('btn-favorite');          // «В избранное» (только на экране карты)
+const $btnFavOpen = el('btn-fav-open');           // Список «Избранное» рядом с «Поделиться»
+const $btnFavorite = el('btn-favorite');          // «В избранное» (в шапке экрана карты)
 
 const $btnBack = el('btn-back');
 const $btnClear = el('btn-clear');
@@ -85,9 +88,15 @@ function pickRandom(exceptId = null) {
   if (DECK.length > 1 && exceptId != null && DECK[idx].id === exceptId) idx = (idx + 1) % DECK.length;
   return DECK[idx];
 }
+function toggleTopbars(section) {
+  // Дом: показываем home-топбар; Карта: card-топбар; Список: любой — логичнее home-топбар
+  $topbarHome.classList.toggle('hidden', section !== $home);
+  $topbarCard.classList.toggle('hidden', section !== $card);
+}
 function show(section) {
   [$home, $card, $list].forEach(s => s.classList.add('hidden'));
   section.classList.remove('hidden');
+  toggleTopbars(section);
 }
 function absoluteImageUrl(rel) {
   return new URL(rel, location.href).href;
@@ -202,5 +211,6 @@ if ($btnCloseAbout) $btnCloseAbout.onclick = () => $about.classList.add('hidden'
     console.error(e);
     alert('Не удалось загрузить колоду. Проверьте deck.json');
   }
+  // стартуем с домашнего экрана и корректным топбаром
   show($home);
 })();
