@@ -10,11 +10,19 @@
 <body>
   <div id="app" class="container">
 
-    <!-- Топбар домашнего экрана: только История -->
+    <!-- Топбар ДОМАШНЕГО экрана: справа только «История» -->
     <header id="topbar-home" class="topbar">
       <h1 class="title-two-lines">Карты с<br>посланиями</h1>
       <button id="btn-history" class="ghost btn">История</button>
-      <!-- Кнопки «В избранное» здесь НЕТ -->
+    </header>
+
+    <!-- Топбар ЭКРАНА КАРТЫ: «История» + «В избранное» в одну строку -->
+    <header id="topbar-card" class="topbar card-topbar hidden">
+      <h1 class="title-two-lines">Карты с<br>посланиями</h1>
+      <div class="topbar-actions">
+        <button id="btn-history-card" class="ghost btn">История</button>
+        <button id="btn-favorite" class="ghost btn">В избранное</button>
+      </div>
     </header>
 
     <main id="main">
@@ -37,15 +45,6 @@
 
       <!-- Экран карточки -->
       <section id="card" class="hidden">
-        <!-- Шапка экрана карты: заголовок в 2 строки + «История» и «В избранное» в одну строку -->
-        <header id="topbar-card" class="topbar card-topbar">
-          <h1 class="title-two-lines">Карты с<br>посланиями</h1>
-          <div class="topbar-actions">
-            <button id="btn-history-card" class="ghost btn">История</button>
-            <button id="btn-favorite" class="ghost btn">В избранное</button>
-          </div>
-        </header>
-
         <div class="card-media">
           <img id="card-img" alt="Карта" />
         </div>
@@ -55,12 +54,12 @@
           <p id="card-msg" class="message"></p>
         </div>
 
+        <!-- ВНУТРИ КАРТЫ КНОПКИ «ИСТОРИЯ» НЕТ -->
         <div class="actions">
           <button id="btn-again" class="btn btn-primary">Ещё раз</button>
           <button id="btn-send" class="btn">Отправить в чат</button>
-
-          <!-- «Поделиться» и «Избранное» — РЯДОМ -->
           <button id="btn-share" class="btn ghost">Поделиться</button>
+          <!-- Рядом с «Поделиться» — вход в список избранного -->
           <button id="btn-fav-open" class="btn">Избранное</button>
         </div>
       </section>
@@ -77,7 +76,6 @@
     </main>
 
     <footer class="foot">
-      <!-- Внизу оставили только «О проекте» -->
       <button id="btn-about" class="btn ghost small">О проекте</button>
     </footer>
   </div>
