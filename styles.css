@@ -47,13 +47,15 @@ body{
 h1,h2{font-weight:800;letter-spacing:.2px;margin:0 0 6px}
 h1{font-size:var(--fs-h1)}
 h2{font-size:var(--fs-h2)}
+.title-two-lines{line-height:1.1; white-space:pre-line;}
 .lead{font-size:var(--fs-lead);color:#EDE6FF;text-align:left;margin:14px 0 10px}
 .hint{color:var(--muted);text-align:center;margin:18px 0}
 .message{white-space:pre-wrap}
 
-/* ---------- Топбар ---------- */
-.topbar{display:flex;align-items:center;gap:8px}
+/* ---------- Топбары ---------- */
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .topbar h1{flex:1}
+.card-topbar .topbar-actions{display:flex;gap:8px}
 
 /* ---------- Кнопки ---------- */
 .btn{
@@ -145,17 +147,13 @@ h2{font-size:var(--fs-h2)}
   grid-template-columns:1fr 1fr 1fr 1fr;
   gap:10px;
   margin-top:14px;
-  /* чтобы не прятались за жестовой зоной iOS */
   padding-bottom: max(10px, env(safe-area-inset-bottom));
 }
-/* 👉 На мобильных — в два ряда (2×2), всё помещается и видно кнопку «Поделиться» */
+/* На мобильных — 2×2 */
 @media (max-width:480px){
-  .actions{
-    grid-template-columns:1fr 1fr;
-  }
+  .actions{ grid-template-columns:1fr 1fr; }
 }
 
-#btn-favorite{ background:linear-gradient(180deg, #31125a, #27094a); }
 #btn-share{ background:linear-gradient(180deg, #2b0a4c, #24083f); }
 
 /* ---------- История / Избранное ---------- */
@@ -218,9 +216,8 @@ h2{font-size:var(--fs-h2)}
 /* Скрывашка */
 .hidden{display:none !important}
 
-/* === FIX: корректный размер карты на мобильных === */
+/* === Корректный размер карты на мобильных === */
 #card .card-wrap{ max-width: 100%; }
-#card .card-wrap img,
 #card img#card-img{
   display: block;
   width: 100%;
@@ -230,33 +227,11 @@ h2{font-size:var(--fs-h2)}
   border-radius: 14px;
 }
 @media (max-width: 430px){
-  #card .card-wrap img,
   #card img#card-img{ max-height: 56vh; }
 }
 @media (min-width: 768px){
-  #card .card-wrap img,
   #card img#card-img{ max-height: 68vh; }
 }
 
-/* ====== Перестановка кнопок (только позиционирование) ====== */
-/* «Избранное» (список) — внизу слева, поверх всего */
-#btn-fav{
-  position: fixed;
-  left: 16px;
-  bottom: calc(16px + env(safe-area-inset-bottom));
-  z-index: 1000;
-}
-
-/* «В избранное» (добавление) — наверху справа, рядом по уровню с верхом экрана */
-#btn-favorite{
-  position: fixed;
-  right: 16px;
-  top: calc(72px + env(safe-area-inset-top));
-  z-index: 1000;
-}
-
-/* На планшетах/десктопах слегка корректируем отступы */
-@media (min-width: 640px){
-  #btn-favorite{ top: calc(80px + env(safe-area-inset-top)); }
-  #btn-fav{ bottom: calc(24px + env(safe-area-inset-bottom)); left: 24px; }
-}
+/* === УДАЛЕНО закрепление кнопок:
+   никаких position: fixed / sticky для «Избранное» и «В избранное» === */
