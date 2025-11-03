@@ -4,23 +4,33 @@ if (tg) { tg.expand(); tg.ready(); }
 
 /* --- DOM refs --- */
 const el = (id) => document.getElementById(id);
+
 const $home = el('home');
 const $card = el('card');
 const $list = el('list');
+
 const $listTitle = el('list-title');
 const $listWrap = el('list-wrap');
+
 const $btnDraw = el('btn-draw');
 const $btnAgain = el('btn-again');
-const $btnFav = el('btn-fav'); // теперь внизу
-const $btnFavorite = el('btn-favorite'); // "В избранное" вверху
+
 const $btnShare = el('btn-share');
-const $btnHistory = el('btn-history');
+const $btnSend = el('btn-send');
+
+const $btnHistoryHome = el('btn-history');        // История на домашнем
+const $btnHistoryCard = el('btn-history-card');   // История на экране карты
+
+const $btnFavOpen = el('btn-fav-open');           // Кнопка «Избранное» рядом с «Поделиться»
+const $btnFavorite = el('btn-favorite');          // «В избранное» (только на экране карты)
+
 const $btnBack = el('btn-back');
+const $btnClear = el('btn-clear');
+
 const $img = el('card-img');
 const $ttl = el('card-title');
 const $msg = el('card-msg');
-const $btnSend = el('btn-send');
-const $btnClear = el('btn-clear');
+
 const itemTpl = document.getElementById('item-tpl');
 
 /* Home extra buttons & modals */
@@ -143,12 +153,14 @@ async function shareCard(card) {
 $btnDraw.onclick = () => { const card = pickRandom(LAST_CARD?.id ?? null); if (card) renderCard(card); };
 $btnAgain.onclick = $btnDraw.onclick;
 
-$btnFavorite.onclick = () => {
-  if (!LAST_CARD) return;
-  S.pushFav({ id: LAST_CARD.id, title: LAST_CARD.title, image: LAST_CARD.image, ts: Date.now() });
-  $btnFavorite.textContent = 'Добавлено ✓';
-  setTimeout(() => $btnFavorite.textContent = 'В избранное', 900);
-};
+if ($btnFavorite) {
+  $btnFavorite.onclick = () => {
+    if (!LAST_CARD) return;
+    S.pushFav({ id: LAST_CARD.id, title: LAST_CARD.title, image: LAST_CARD.image, ts: Date.now() });
+    $btnFavorite.textContent = 'Добавлено ✓';
+    setTimeout(() => $btnFavorite.textContent = 'В избранное', 900);
+  };
+}
 
 $btnShare.onclick = () => LAST_CARD && shareCard(LAST_CARD);
 
@@ -164,8 +176,10 @@ if ($btnSend) {
 }
 
 /* Навигация списков */
-$btnHistory.onclick = () => renderList('history');
-$btnFav.onclick = () => renderList('fav');
+$btnHistoryHome.onclick = () => renderList('history');
+if ($btnHistoryCard) $btnHistoryCard.onclick = () => renderList('history');
+$btnFavOpen.onclick = () => renderList('fav');
+
 $btnBack.onclick = () => show($home);
 if ($btnClear) $btnClear.onclick = () => { S.clearHistory(); renderList('history'); };
 
