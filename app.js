@@ -4,45 +4,35 @@ if (tg) { tg.expand(); tg.ready(); }
 
 /* --- DOM refs --- */
 const el = (id) => document.getElementById(id);
-
 const $home = el('home');
 const $card = el('card');
 const $list = el('list');
-
-const $topbarHome = el('topbar-home');
-const $topbarCard = el('topbar-card');
-
 const $listTitle = el('list-title');
 const $listWrap = el('list-wrap');
-
 const $btnDraw = el('btn-draw');
 const $btnAgain = el('btn-again');
-
+const $btnFavorite = el('btn-favorite'); // добавить в избранное (на экране карты)
 const $btnShare = el('btn-share');
-const $btnSend = el('btn-send');
-
-const $btnHistoryHome = el('btn-history');        // История (дом)
-const $btnHistoryCard = el('btn-history-card');   // История (в шапке экрана карты)
-
-const $btnFavOpen = el('btn-fav-open');           // Список «Избранное» рядом с «Поделиться»
-const $btnFavorite = el('btn-favorite');          // «В избранное» (в шапке экрана карты)
-
+const $btnHistory = el('btn-history');
+const $btnFavList = el('btn-fav');       // кнопка "Избранное" в топбаре
+const $btnFavHome = el('btn-fav-home');  // НОВОЕ: "Избранное" на главном экране
 const $btnBack = el('btn-back');
-const $btnClear = el('btn-clear');
-
 const $img = el('card-img');
 const $ttl = el('card-title');
 const $msg = el('card-msg');
-
+const $btnSend = el('btn-send');
+const $btnClear = el('btn-clear');
 const itemTpl = document.getElementById('item-tpl');
 
 /* Home extra buttons & modals */
 const $btnHow   = el('btn-how');
 const $btnGuide = el('btn-guide');
 const $btnHelp  = el('btn-help');
+
 const $modalHow   = el('modal-how');
 const $modalGuide = el('modal-guide');
 const $about      = el('about-modal');
+
 const $btnCloseHow   = el('btn-close-how');
 const $btnCloseGuide = el('btn-close-guide');
 const $btnAbout      = el('btn-about');
@@ -88,15 +78,9 @@ function pickRandom(exceptId = null) {
   if (DECK.length > 1 && exceptId != null && DECK[idx].id === exceptId) idx = (idx + 1) % DECK.length;
   return DECK[idx];
 }
-function toggleTopbars(section) {
-  // Дом: показываем home-топбар; Карта: card-топбар; Список: любой — логичнее home-топбар
-  $topbarHome.classList.toggle('hidden', section !== $home);
-  $topbarCard.classList.toggle('hidden', section !== $card);
-}
 function show(section) {
   [$home, $card, $list].forEach(s => s.classList.add('hidden'));
   section.classList.remove('hidden');
-  toggleTopbars(section);
 }
 function absoluteImageUrl(rel) {
   return new URL(rel, location.href).href;
@@ -142,7 +126,7 @@ function renderList(kind = 'history') {
     }
     root.onclick = () => {
       const card = findCardById(it.id);
-      if (card) renderCard(card, false);
+      if (card) renderCard(card, false); // открытие из списков — не пишем в Историю
     };
     $listWrap.appendChild(node);
   });
@@ -162,15 +146,12 @@ async function shareCard(card) {
 $btnDraw.onclick = () => { const card = pickRandom(LAST_CARD?.id ?? null); if (card) renderCard(card); };
 $btnAgain.onclick = $btnDraw.onclick;
 
-if ($btnFavorite) {
-  $btnFavorite.onclick = () => {
-    if (!LAST_CARD) return;
-    S.pushFav({ id: LAST_CARD.id, title: LAST_CARD.title, image: LAST_CARD.image, ts: Date.now() });
-    $btnFavorite.textContent = 'Добавлено ✓';
-    setTimeout(() => $btnFavorite.textContent = 'В избранное', 900);
-  };
-}
-
+$btnFavorite.onclick = () => {
+  if (!LAST_CARD) return;
+  S.pushFav({ id: LAST_CARD.id, title: LAST_CARD.title, image: LAST_CARD.image, ts: Date.now() });
+  $btnFavorite.textContent = 'Добавлено ✓';
+  setTimeout(() => $btnFavorite.textContent = 'В избранное', 900);
+};
 $btnShare.onclick = () => LAST_CARD && shareCard(LAST_CARD);
 
 /* Отправка в чат */
@@ -185,21 +166,28 @@ if ($btnSend) {
 }
 
 /* Навигация списков */
-$btnHistoryHome.onclick = () => renderList('history');
-if ($btnHistoryCard) $btnHistoryCard.onclick = () => renderList('history');
-$btnFavOpen.onclick = () => renderList('fav');
+$btnHistory.onclick = () => renderList('history');
+$btnFavList.onclick  = () => renderList('fav');
+if ($btnFavHome) $btnFavHome.onclick = () => renderList('fav'); // НОВОЕ: переход в Избранное с главного экрана
 
 $btnBack.onclick = () => show($home);
 if ($btnClear) $btnClear.onclick = () => { S.clearHistory(); renderList('history'); };
 
-/* Модалки */
+/* Модалки главного экрана */
 if ($btnHow)   $btnHow.onclick   = () => $modalHow.classList.remove('hidden');
 if ($btnGuide) $btnGuide.onclick = () => $modalGuide.classList.remove('hidden');
 if ($btnHelp)  $btnHelp.onclick  = () => $about.classList.remove('hidden');
+
 if ($btnCloseHow)   $btnCloseHow.onclick   = () => $modalHow.classList.add('hidden');
 if ($btnCloseGuide) $btnCloseGuide.onclick = () => $modalGuide.classList.add('hidden');
 if ($btnAbout)      $btnAbout.onclick      = () => $about.classList.remove('hidden');
 if ($btnCloseAbout) $btnCloseAbout.onclick = () => $about.classList.add('hidden');
+
+/* Закрытие модалок по клику на фон */
+[$modalHow, $modalGuide, $about].forEach(m => {
+  if (!m) return;
+  m.addEventListener('click', (e) => { if (e.target === m) m.classList.add('hidden'); });
+});
 
 /* --- Boot --- */
 (async function boot() {
@@ -211,6 +199,5 @@ if ($btnCloseAbout) $btnCloseAbout.onclick = () => $about.classList.add('hidden'
     console.error(e);
     alert('Не удалось загрузить колоду. Проверьте deck.json');
   }
-  // стартуем с домашнего экрана и корректным топбаром
   show($home);
 })();
