@@ -11,6 +11,7 @@
   <div id="app" class="container">
     <header class="topbar">
       <h1>Карты с посланиями</h1>
+      <!-- Верхние кнопки: как было -->
       <button id="btn-history" class="ghost btn">История</button>
       <button id="btn-fav" class="ghost btn">Избранное</button>
     </header>
@@ -24,10 +25,9 @@
         </p>
 
         <p class="hint">Нажми, чтобы вытянуть карту дня</p>
-
-        <!-- главные CTA -->
         <button id="btn-draw" class="btn btn-primary btn-lg">Вытянуть карту</button>
-        <!-- НОВОЕ: кнопка Избранное на главном экране такого же размера -->
+
+        <!-- Новая кнопка ИЗБРАННОЕ на главном экране (ровно под жёлтой) -->
         <button id="btn-fav-home" class="btn btn-lg">Избранное</button>
 
         <div class="home-actions">
@@ -48,6 +48,7 @@
           <p id="card-msg" class="message"></p>
         </div>
 
+        <!-- Кнопки под картой: как было (без изменений) -->
         <div class="actions">
           <button id="btn-again" class="btn btn-primary">Ещё раз</button>
           <button id="btn-favorite" class="btn">В избранное</button>
@@ -72,7 +73,7 @@
     </footer>
   </div>
 
-  <!-- Шаблон элемента списка (карточка в Истории/Избранном) -->
+  <!-- Шаблон элемента списка -->
   <template id="item-tpl">
     <div class="item" data-id="">
       <img class="thumb" alt="" />
@@ -110,7 +111,7 @@
     </div>
   </div>
 
-  <!-- Модалка: О проекте / помощь -->
+  <!-- Модалка: О проекте -->
   <div id="about-modal" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-about" class="modal-x" aria-label="Закрыть">✕</button>
