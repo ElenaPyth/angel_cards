@@ -9,20 +9,10 @@
 </head>
 <body>
   <div id="app" class="container">
-
-    <!-- Топбар ДОМАШНЕГО экрана: справа только «История» -->
-    <header id="topbar-home" class="topbar">
-      <h1 class="title-two-lines">Карты с<br>посланиями</h1>
+    <header class="topbar">
+      <h1>Карты с посланиями</h1>
       <button id="btn-history" class="ghost btn">История</button>
-    </header>
-
-    <!-- Топбар ЭКРАНА КАРТЫ: «История» + «В избранное» в одну строку -->
-    <header id="topbar-card" class="topbar card-topbar hidden">
-      <h1 class="title-two-lines">Карты с<br>посланиями</h1>
-      <div class="topbar-actions">
-        <button id="btn-history-card" class="ghost btn">История</button>
-        <button id="btn-favorite" class="ghost btn">В избранное</button>
-      </div>
+      <button id="btn-fav" class="ghost btn">Избранное</button>
     </header>
 
     <main id="main">
@@ -34,7 +24,11 @@
         </p>
 
         <p class="hint">Нажми, чтобы вытянуть карту дня</p>
+
+        <!-- главные CTA -->
         <button id="btn-draw" class="btn btn-primary btn-lg">Вытянуть карту</button>
+        <!-- НОВОЕ: кнопка Избранное на главном экране такого же размера -->
+        <button id="btn-fav-home" class="btn btn-lg">Избранное</button>
 
         <div class="home-actions">
           <button id="btn-how"   class="btn pill">Инструкция по работе с картами</button>
@@ -54,13 +48,11 @@
           <p id="card-msg" class="message"></p>
         </div>
 
-        <!-- ВНУТРИ КАРТЫ КНОПКИ «ИСТОРИЯ» НЕТ -->
         <div class="actions">
           <button id="btn-again" class="btn btn-primary">Ещё раз</button>
+          <button id="btn-favorite" class="btn">В избранное</button>
           <button id="btn-send" class="btn">Отправить в чат</button>
           <button id="btn-share" class="btn ghost">Поделиться</button>
-          <!-- Рядом с «Поделиться» — вход в список избранного -->
-          <button id="btn-fav-open" class="btn">Избранное</button>
         </div>
       </section>
 
@@ -80,7 +72,7 @@
     </footer>
   </div>
 
-  <!-- Шаблон элемента списка -->
+  <!-- Шаблон элемента списка (карточка в Истории/Избранном) -->
   <template id="item-tpl">
     <div class="item" data-id="">
       <img class="thumb" alt="" />
@@ -92,7 +84,7 @@
     </div>
   </template>
 
-  <!-- Модалки -->
+  <!-- Модалка: Инструкция -->
   <div id="modal-how" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-how" class="modal-x" aria-label="Закрыть">✕</button>
@@ -105,6 +97,7 @@
     </div>
   </div>
 
+  <!-- Модалка: Как пользоваться -->
   <div id="modal-guide" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-guide" class="modal-x" aria-label="Закрыть">✕</button>
@@ -117,6 +110,7 @@
     </div>
   </div>
 
+  <!-- Модалка: О проекте / помощь -->
   <div id="about-modal" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-about" class="modal-x" aria-label="Закрыть">✕</button>
