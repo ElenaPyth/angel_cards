@@ -11,9 +11,11 @@
   <div id="app" class="container">
     <header class="topbar">
       <h1>Карты с посланиями</h1>
-      <!-- Верхние кнопки: как было -->
-      <button id="btn-history" class="ghost btn">История</button>
-      <button id="btn-fav" class="ghost btn">Избранное</button>
+      <button id="btn-history" class="btn ghost">История</button>
+      <!-- Эта кнопка меняет поведение в зависимости от экрана:
+           Дом/Списки — открывает Избранное;
+           Экран карты — добавляет текущую карту «В избранное». -->
+      <button id="btn-fav" class="btn ghost">Избранное</button>
     </header>
 
     <main id="main">
@@ -25,9 +27,10 @@
         </p>
 
         <p class="hint">Нажми, чтобы вытянуть карту дня</p>
+
         <button id="btn-draw" class="btn btn-primary btn-lg">Вытянуть карту</button>
 
-        <!-- Новая кнопка ИЗБРАННОЕ на главном экране (ровно под жёлтой) -->
+        <!-- ОДНА дополнительная кнопка «Избранное» под жёлтой -->
         <button id="btn-fav-home" class="btn btn-lg">Избранное</button>
 
         <div class="home-actions">
@@ -48,10 +51,10 @@
           <p id="card-msg" class="message"></p>
         </div>
 
-        <!-- Кнопки под картой: как было (без изменений) -->
         <div class="actions">
           <button id="btn-again" class="btn btn-primary">Ещё раз</button>
-          <button id="btn-favorite" class="btn">В избранное</button>
+          <!-- ВНИЗУ под картой теперь кнопка ОТКРЫТИЯ избранного -->
+          <button id="btn-open-fav" class="btn">Избранное</button>
           <button id="btn-send" class="btn">Отправить в чат</button>
           <button id="btn-share" class="btn ghost">Поделиться</button>
         </div>
@@ -85,7 +88,7 @@
     </div>
   </template>
 
-  <!-- Модалка: Инструкция -->
+  <!-- Модалки -->
   <div id="modal-how" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-how" class="modal-x" aria-label="Закрыть">✕</button>
@@ -98,7 +101,6 @@
     </div>
   </div>
 
-  <!-- Модалка: Как пользоваться -->
   <div id="modal-guide" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-guide" class="modal-x" aria-label="Закрыть">✕</button>
@@ -111,7 +113,6 @@
     </div>
   </div>
 
-  <!-- Модалка: О проекте -->
   <div id="about-modal" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-about" class="modal-x" aria-label="Закрыть">✕</button>
