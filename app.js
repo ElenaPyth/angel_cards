@@ -1,4 +1,4 @@
-/* ========= SAFE TELEGRAM INIT ========= */
+/* ================= SAFE TELEGRAM INIT ================= */
 
 let tg = null;
 
@@ -12,9 +12,11 @@ try {
   console.warn('Telegram WebApp not available');
 }
 
-/* ========= DOM ========= */
+/* ================= DOM HELPERS ================= */
 
 const el = (id) => document.getElementById(id);
+
+/* ================= DOM REFS ================= */
 
 const $home = el('home');
 const $card = el('card');
@@ -40,24 +42,28 @@ const $msg = el('card-msg');
 const $listTitle = el('list-title');
 const $listWrap = el('list-wrap');
 
-const $btnHow   = el('btn-how');
+const $btnHow = el('btn-how');
 const $btnGuide = el('btn-guide');
-const $btnHelp  = el('btn-help');
-const $modalHow   = el('modal-how');
+const $btnHelp = el('btn-help');
+
+const $modalHow = el('modal-how');
 const $modalGuide = el('modal-guide');
-const $about      = el('about-modal');
-const $btnCloseHow   = el('btn-close-how');
+const $about = el('about-modal');
+
+const $btnCloseHow = el('btn-close-how');
 const $btnCloseGuide = el('btn-close-guide');
-const $btnAbout      = el('btn-about');
+const $btnAbout = el('btn-about');
 const $btnCloseAbout = el('btn-close-about');
 
 const itemTpl = el('item-tpl');
+
+/* ================= STATE ================= */
 
 let DECK = [];
 let LAST_CARD = null;
 let CURRENT_VIEW = 'home';
 
-/* ========= STORAGE ========= */
+/* ================= STORAGE ================= */
 
 const S = {
   kHistory: 'cards_history_v1',
@@ -99,7 +105,7 @@ const S = {
   }
 };
 
-/* ========= HELPERS ========= */
+/* ================= HELPERS ================= */
 
 function show(view) {
   CURRENT_VIEW = view;
@@ -114,14 +120,16 @@ function show(view) {
 
 function pickRandom(exceptId) {
   if (!DECK.length) return null;
+
   let card;
   do {
     card = DECK[Math.floor(Math.random() * DECK.length)];
   } while (DECK.length > 1 && card.id === exceptId);
+
   return card;
 }
 
-/* ========= RENDER ========= */
+/* ================= RENDER ================= */
 
 function renderCard(card, save = true) {
   LAST_CARD = card;
@@ -153,17 +161,17 @@ function renderList(kind) {
     const root = node.querySelector('.item');
 
     root.onclick = () => {
-      const card = DECK.find(c => c.id == it.id);
+      const card = DECK.find(c => String(c.id) === String(it.id));
       if (card) renderCard(card, false);
     };
 
     node.querySelector('.thumb').src = it.image;
     node.querySelector('.ttl').textContent = it.title;
 
-    const del = node.querySelector('.del');
-    if (del) {
-      del.classList.toggle('hidden', kind !== 'fav');
-      del.onclick = (e) => {
+    const delBtn = node.querySelector('.del');
+    if (delBtn) {
+      delBtn.classList.toggle('hidden', kind !== 'fav');
+      delBtn.onclick = (e) => {
         e.stopPropagation();
         S.removeFav(it.id);
         renderList('fav');
@@ -176,7 +184,7 @@ function renderList(kind) {
   show('list');
 }
 
-/* ========= EVENTS ========= */
+/* ================= EVENTS ================= */
 
 $btnDraw.onclick = () => {
   const card = pickRandom(LAST_CARD && LAST_CARD.id);
@@ -197,32 +205,67 @@ $btnFavHome.onclick = () => renderList('fav');
 $btnOpenFav.onclick = () => renderList('fav');
 $btnHistory.onclick = () => renderList('history');
 
+/* ================= PRACTICE BUTTON ================= */
+
 if ($btnPractice) {
   $btnPractice.onclick = () => {
-    if (!tg) {
-      alert('Практика доступна в Telegram');
+    console.log('Practice button clicked');
+
+    if (!tg || typeof tg.sendData !== 'function') {
+      console.warn('Telegram WebApp not ready');
+      alert('Практика доступна только внутри Telegram');
       return;
     }
 
-    tg.sendData(JSON.stringify({
+    const payload = {
       action: 'practice',
       text: 'Ангелы'
-    }));
+    };
 
-    tg.close();
+    console.log('Sending payload:', payload);
+
+    try {
+      tg.sendData(JSON.stringify(payload));
+      console.log('sendData success');
+    } catch (err) {
+      console.error('sendData error', err);
+    }
+
+    try {
+      tg.close();
+    } catch (err) {
+      console.error('close error', err);
+    }
   };
 }
 
+/* ================= SHARE ================= */
+
 $btnShare.onclick = () => {
-  if (LAST_CARD) {
-    navigator.clipboard.writeText(
-      `${LAST_CARD.title}\n\n${LAST_CARD.message}`
-    );
+  if (!LAST_CARD) return;
+
+  const text = `${LAST_CARD.title}\n\n${LAST_CARD.message}`;
+
+  if (navigator.share) {
+    navigator.share({ text });
+  } else {
+    navigator.clipboard.writeText(text);
     alert('Послание скопировано');
   }
 };
 
+/* ================= NAV ================= */
+
 $btnBack.onclick = () => show('home');
+
+if ($btnClear) {
+  $btnClear.onclick = () => {
+    S.clearHistory();
+    renderList('history');
+  };
+}
+
+/* ================= MODALS ================= */
 
 $btnHow.onclick = () => $modalHow.classList.remove('hidden');
 $btnGuide.onclick = () => $modalGuide.classList.remove('hidden');
@@ -232,14 +275,16 @@ $btnCloseHow.onclick = () => $modalHow.classList.add('hidden');
 $btnCloseGuide.onclick = () => $modalGuide.classList.add('hidden');
 $btnCloseAbout.onclick = () => $about.classList.add('hidden');
 
-/* ========= BOOT ========= */
+/* ================= BOOT ================= */
 
-(async function () {
+(async function boot() {
   try {
     const res = await fetch('./deck.json?' + Date.now());
     DECK = await res.json();
-  } catch {
-    alert('Ошибка загрузки колоды');
+  } catch (e) {
+    console.error(e);
+    alert('Не удалось загрузить колоду');
   }
+
   show('home');
 })();
