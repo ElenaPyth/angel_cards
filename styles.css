@@ -304,4 +304,27 @@ h2{font-size:var(--fs-h2)}
 body:not(.home-view) #floating-about-btn {
   display: none !important;
 }
+.floating-about-btn {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 100;
+  padding: 13px 32px;
+  border-radius: 18px;
+  font-size: 17px;
+  background: var(--accent2, #FFD903);
+  color: #2d1848;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 8px 24px rgba(30,0,30,.19), 0 1.5px 0.5px #fff3;
+  cursor: pointer;
+  transition: box-shadow .12s, opacity .14s;
+}
+.floating-about-btn:hover {
+  box-shadow: 0 12px 32px rgba(255, 175, 60, .22), 0 0 24px #FFD90344;
+}
+.floating-about-btn.hidden {
+  display: none !important;
+}
 
