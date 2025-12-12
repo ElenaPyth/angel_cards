@@ -218,7 +218,14 @@ if ($btnPractice) {
     const url = 'https://t.me/Tesei_Angels_bot?text=ангелы';
 
     if (tg && typeof tg.openTelegramLink === 'function') {
-      tg.openTelegramLink(url);
+      tg.openTelegramconst url = 'https://t.me/Tesei_Angels_bot?start=angely';
+
+if (tg && typeof tg.openLink === 'function') {
+  tg.openLink(url);
+} else {
+  window.location.href = url;
+}
+Link(url);
     } else {
       window.open(url, '_blank');
     }
