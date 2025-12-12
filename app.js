@@ -1,11 +1,19 @@
-/* Telegram init */
-const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.expand();
-  tg.ready();
+/* ========= SAFE TELEGRAM INIT ========= */
+
+let tg = null;
+
+try {
+  if (window.Telegram && window.Telegram.WebApp) {
+    tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+  }
+} catch (e) {
+  console.warn('Telegram WebApp not available');
 }
 
-/* DOM refs */
+/* ========= DOM ========= */
+
 const el = (id) => document.getElementById(id);
 
 const $home = el('home');
@@ -19,7 +27,7 @@ const $btnOpenFav = el('btn-open-fav');
 
 const $btnDraw = el('btn-draw');
 const $btnAgain = el('btn-again');
-const $btnPractice = el('btn-practice'); // новая кнопка практики
+const $btnPractice = el('btn-practice');
 const $btnShare = el('btn-share');
 
 const $btnBack = el('btn-back');
@@ -43,16 +51,18 @@ const $btnCloseGuide = el('btn-close-guide');
 const $btnAbout      = el('btn-about');
 const $btnCloseAbout = el('btn-close-about');
 
-const itemTpl = document.getElementById('item-tpl');
+const itemTpl = el('item-tpl');
 
 let DECK = [];
 let LAST_CARD = null;
-let CURRENT_VIEW = 'home'; // home | card | list
+let CURRENT_VIEW = 'home';
 
-/* Хранилище */
+/* ========= STORAGE ========= */
+
 const S = {
   kHistory: 'cards_history_v1',
   kFav: 'cards_fav_v1',
+
   read(key) {
     try {
       return JSON.parse(localStorage.getItem(key) || '[]');
@@ -60,74 +70,68 @@ const S = {
       return [];
     }
   },
+
   write(key, list) {
     localStorage.setItem(key, JSON.stringify(list));
   },
+
   pushHistory(item) {
-    const list = S.read(S.kHistory);
+    const list = this.read(this.kHistory);
     list.unshift(item);
-    S.write(S.kHistory, list.slice(0, 200));
+    this.write(this.kHistory, list.slice(0, 200));
   },
+
   pushFav(item) {
-    const list = S.read(S.kFav);
+    const list = this.read(this.kFav);
     if (!list.find(x => x.id === item.id)) {
       list.unshift(item);
-      S.write(S.kFav, list.slice(0, 200));
+      this.write(this.kFav, list.slice(0, 200));
     }
   },
+
   removeFav(id) {
-    const list = S.read(S.kFav).filter(x => x.id !== id);
-    S.write(S.kFav, list);
+    const list = this.read(this.kFav).filter(x => x.id !== id);
+    this.write(this.kFav, list);
   },
+
   clearHistory() {
-    S.write(S.kHistory, []);
+    this.write(this.kHistory, []);
   }
 };
 
-/* Утилиты */
-function fmtDate(ts) {
-  const d = new Date(ts);
-  return d.toLocaleString(undefined, {
-    day: '2-digit',
-    month: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-}
+/* ========= HELPERS ========= */
 
-function pickRandom(exceptId = null) {
-  if (!DECK.length) return null;
-  let idx = Math.floor(Math.random() * DECK.length);
-  if (DECK.length > 1 && exceptId != null && DECK[idx].id === exceptId) {
-    idx = (idx + 1) % DECK.length;
-  }
-  return DECK[idx];
-}
-
-function findCardById(id) {
-  return DECK.find(c => String(c.id) === String(id));
-}
-
-function show(sectionName) {
-  CURRENT_VIEW = sectionName;
+function show(view) {
+  CURRENT_VIEW = view;
   $home.classList.add('hidden');
   $card.classList.add('hidden');
   $list.classList.add('hidden');
 
-  if (sectionName === 'home') $home.classList.remove('hidden');
-  if (sectionName === 'card') $card.classList.remove('hidden');
-  if (sectionName === 'list') $list.classList.remove('hidden');
+  if (view === 'home') $home.classList.remove('hidden');
+  if (view === 'card') $card.classList.remove('hidden');
+  if (view === 'list') $list.classList.remove('hidden');
 }
 
-/* Рендер карты */
-function renderCard(card, addToHistory = true) {
+function pickRandom(exceptId) {
+  if (!DECK.length) return null;
+  let card;
+  do {
+    card = DECK[Math.floor(Math.random() * DECK.length)];
+  } while (DECK.length > 1 && card.id === exceptId);
+  return card;
+}
+
+/* ========= RENDER ========= */
+
+function renderCard(card, save = true) {
   LAST_CARD = card;
+
   $img.src = card.image;
   $img.alt = card.title;
   $ttl.textContent = card.title;
   $msg.textContent = card.message;
 
-  if (addToHistory) {
+  if (save) {
     S.pushHistory({
       id: card.id,
       title: card.title,
@@ -135,142 +139,107 @@ function renderCard(card, addToHistory = true) {
       ts: Date.now()
     });
   }
+
   show('card');
 }
 
-/* Рендер списка истории/избранного */
-function renderList(kind = 'history') {
+function renderList(kind) {
   $listWrap.innerHTML = '';
-  const data = S.read(kind === 'history' ? S.kHistory : S.kFav);
-  $listTitle.textContent = kind === 'history' ? 'История' : 'Избранное';
+  const data = S.read(kind === 'fav' ? S.kFav : S.kHistory);
+  $listTitle.textContent = kind === 'fav' ? 'Избранное' : 'История';
 
   data.forEach(it => {
     const node = itemTpl.content.cloneNode(true);
     const root = node.querySelector('.item');
-    root.dataset.id = it.id;
-    root.dataset.kind = kind;
+
+    root.onclick = () => {
+      const card = DECK.find(c => c.id == it.id);
+      if (card) renderCard(card, false);
+    };
+
     node.querySelector('.thumb').src = it.image;
     node.querySelector('.ttl').textContent = it.title;
-    node.querySelector('.dt').textContent = fmtDate(it.ts || Date.now());
-    const delBtn = node.querySelector('.del');
-    if (delBtn) {
-      delBtn.classList.toggle('hidden', kind !== 'fav');
-      delBtn.onclick = (e) => {
+
+    const del = node.querySelector('.del');
+    if (del) {
+      del.classList.toggle('hidden', kind !== 'fav');
+      del.onclick = (e) => {
         e.stopPropagation();
         S.removeFav(it.id);
         renderList('fav');
       };
     }
-    root.onclick = () => {
-      const card = findCardById(it.id);
-      if (card) renderCard(card, false);
-    };
+
     $listWrap.appendChild(node);
   });
-
-  if ($btnClear) {
-    $btnClear.classList.toggle('hidden', kind !== 'history' || data.length === 0);
-  }
 
   show('list');
 }
 
-/* Поделиться */
-async function shareCard(card) {
-  const text = `${card.title}\n\n${card.message}`;
-  if (navigator.share) {
-    try {
-      await navigator.share({ text });
-      return;
-    } catch {}
-  }
-  try {
-    await navigator.clipboard.writeText(text);
-    alert('Текст послания скопирован.');
-  } catch {
-    alert('Скопируй текст вручную:\n\n' + text);
-  }
-}
-
-/* События */
+/* ========= EVENTS ========= */
 
 $btnDraw.onclick = () => {
-  const card = pickRandom(LAST_CARD?.id ?? null);
+  const card = pickRandom(LAST_CARD && LAST_CARD.id);
   if (card) renderCard(card);
 };
+
 $btnAgain.onclick = $btnDraw.onclick;
 
-/* Верхняя кнопка Избранное:
-   на экране карты добавляет карту в избранное,
-   на других экранах открывает список избранного. */
 $btnFavTop.onclick = () => {
-  if (CURRENT_VIEW === 'card') {
-    if (!LAST_CARD) return;
-    S.pushFav({
-      id: LAST_CARD.id,
-      title: LAST_CARD.title,
-      image: LAST_CARD.image,
-      ts: Date.now()
-    });
-    $btnFavTop.textContent = 'Добавлено ✓';
-    setTimeout(() => { $btnFavTop.textContent = 'Избранное'; }, 900);
+  if (CURRENT_VIEW === 'card' && LAST_CARD) {
+    S.pushFav({ ...LAST_CARD, ts: Date.now() });
   } else {
     renderList('fav');
   }
 };
 
-/* Кнопки открытия избранного */
 $btnFavHome.onclick = () => renderList('fav');
 $btnOpenFav.onclick = () => renderList('fav');
-
-/* История */
 $btnHistory.onclick = () => renderList('history');
 
-/* НОВАЯ логика кнопки «Пройти бесплатную практику» */
 if ($btnPractice) {
   $btnPractice.onclick = () => {
-    if (!tg) return;
-    const payload = {
+    if (!tg) {
+      alert('Практика доступна в Telegram');
+      return;
+    }
+
+    tg.sendData(JSON.stringify({
       action: 'practice',
       text: 'Ангелы'
-    };
-    tg.sendData(JSON.stringify(payload));
+    }));
+
     tg.close();
   };
 }
 
-/* Поделиться */
 $btnShare.onclick = () => {
-  if (LAST_CARD) shareCard(LAST_CARD);
+  if (LAST_CARD) {
+    navigator.clipboard.writeText(
+      `${LAST_CARD.title}\n\n${LAST_CARD.message}`
+    );
+    alert('Послание скопировано');
+  }
 };
 
-/* Навигация в списках */
 $btnBack.onclick = () => show('home');
-if ($btnClear) {
-  $btnClear.onclick = () => {
-    S.clearHistory();
-    renderList('history');
-  };
-}
 
-/* Модалки */
-if ($btnHow)   $btnHow.onclick   = () => $modalHow.classList.remove('hidden');
-if ($btnGuide) $btnGuide.onclick = () => $modalGuide.classList.remove('hidden');
-if ($btnHelp)  $btnHelp.onclick  = () => $about.classList.remove('hidden');
-if ($btnCloseHow)   $btnCloseHow.onclick   = () => $modalHow.classList.add('hidden');
-if ($btnCloseGuide) $btnCloseGuide.onclick = () => $modalGuide.classList.add('hidden');
-if ($btnAbout)      $btnAbout.onclick      = () => $about.classList.remove('hidden');
-if ($btnCloseAbout) $btnCloseAbout.onclick = () => $about.classList.add('hidden');
+$btnHow.onclick = () => $modalHow.classList.remove('hidden');
+$btnGuide.onclick = () => $modalGuide.classList.remove('hidden');
+$btnHelp.onclick = () => $about.classList.remove('hidden');
 
-/* Загрузка колоды */
-(async function boot() {
+$btnCloseHow.onclick = () => $modalHow.classList.add('hidden');
+$btnCloseGuide.onclick = () => $modalGuide.classList.add('hidden');
+$btnCloseAbout.onclick = () => $about.classList.add('hidden');
+
+/* ========= BOOT ========= */
+
+(async function () {
   try {
-    const deckName = new URL(location.href).searchParams.get('deck') || 'deck';
-    const res = await fetch(`./${deckName}.json?${Date.now()}`);
+    const res = await fetch('./deck.json?' + Date.now());
     DECK = await res.json();
-  } catch (e) {
-    console.error(e);
-    alert('Не удалось загрузить колоду. Проверь deck.json.');
+  } catch {
+    alert('Ошибка загрузки колоды');
   }
   show('home');
 })();
