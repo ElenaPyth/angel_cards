@@ -35,13 +35,16 @@ const $btnBackMain = el('btn-back-main');
 const $btnBack = el('btn-back');
 const $btnClear = el('btn-clear');
 
-const $btnGuide = el('btn-guide');
-const $btnHelp = el('btn-help');
+const $btnGuide = el('btn-guide'); // Как пользоваться картами
+const $btnHelp = el('btn-help');   // Чем я могу помочь тебе
 
 const $modalGuide = el('modal-guide');
 const $aboutModal = el('about-modal');
+const $helpModal = el('help-modal');
+
 const $btnCloseGuide = el('btn-close-guide');
 const $btnCloseAbout = el('btn-close-about');
+const $btnCloseHelp = el('btn-close-help');
 
 const $floatingAboutBtn = el('floating-about-btn');
 
@@ -259,10 +262,11 @@ $btnShare.onclick = () => {
 
 // Модалки
 $btnGuide.onclick = () => $modalGuide.classList.remove('hidden');
-$btnHelp.onclick = () => $aboutModal.classList.remove('hidden');
+$btnHelp.onclick = () => $helpModal.classList.remove('hidden');
 
 $btnCloseGuide.onclick = () => $modalGuide.classList.add('hidden');
 $btnCloseAbout.onclick = () => $aboutModal.classList.add('hidden');
+$btnCloseHelp.onclick = () => $helpModal.classList.add('hidden');
 
 // Плавающая кнопка "О проекте"
 if ($floatingAboutBtn) {
