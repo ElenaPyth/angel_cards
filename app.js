@@ -27,9 +27,9 @@ const $btnFavTop = el('btn-fav');
 const $btnFavHome = el('btn-fav-home');
 const $btnOpenFav = el('btn-open-fav');
 
-const $btnDraw = el('btn-draw');
+const $btnDraw = el('btn-draw');          // Ангельские карты
 const $btnAgain = el('btn-again');
-const $btnPractice = el('btn-practice');
+const $btnPractice = el('btn-practice');  // Ангельская практика
 const $btnShare = el('btn-share');
 
 const $btnBack = el('btn-back');
@@ -186,6 +186,8 @@ function renderList(kind) {
 
 /* ================= EVENTS ================= */
 
+// Ангельские карты
+$btnDraw.textContent = 'Ангельские карты';
 $btnDraw.onclick = () => {
   const card = pickRandom(LAST_CARD && LAST_CARD.id);
   if (card) renderCard(card);
@@ -193,6 +195,7 @@ $btnDraw.onclick = () => {
 
 $btnAgain.onclick = $btnDraw.onclick;
 
+// Избранное и история
 $btnFavTop.onclick = () => {
   if (CURRENT_VIEW === 'card' && LAST_CARD) {
     S.pushFav({ ...LAST_CARD, ts: Date.now() });
@@ -205,36 +208,19 @@ $btnFavHome.onclick = () => renderList('fav');
 $btnOpenFav.onclick = () => renderList('fav');
 $btnHistory.onclick = () => renderList('history');
 
-/* ================= PRACTICE BUTTON ================= */
+/* ================= ANGEL PRACTICE BUTTON ================= */
 
+// Ангельская практика → чат бота → текст "ангелы"
 if ($btnPractice) {
+  $btnPractice.textContent = 'Ангельская практика';
+
   $btnPractice.onclick = () => {
-    console.log('Practice button clicked');
+    const url = 'https://t.me/Tesei_Angels_bot?text=ангелы';
 
-    if (!tg || typeof tg.sendData !== 'function') {
-      console.warn('Telegram WebApp not ready');
-      alert('Практика доступна только внутри Telegram');
-      return;
-    }
-
-    const payload = {
-      action: 'practice',
-      text: 'Ангелы'
-    };
-
-    console.log('Sending payload:', payload);
-
-    try {
-      tg.sendData(JSON.stringify(payload));
-      console.log('sendData success');
-    } catch (err) {
-      console.error('sendData error', err);
-    }
-
-    try {
-      tg.close();
-    } catch (err) {
-      console.error('close error', err);
+    if (tg && typeof tg.openTelegramLink === 'function') {
+      tg.openTelegramLink(url);
+    } else {
+      window.open(url, '_blank');
     }
   };
 }
