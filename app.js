@@ -210,25 +210,21 @@ $btnHistory.onclick = () => renderList('history');
 
 /* ================= ANGEL PRACTICE BUTTON ================= */
 
-// Ангельская практика → чат бота → текст "ангелы"
 if ($btnPractice) {
   $btnPractice.textContent = 'Ангельская практика';
 
   $btnPractice.onclick = () => {
-    const url = 'https://t.me/Tesei_Angels_bot?text=ангелы';
+    const url = 'https://t.me/Tesei_Angels_bot?start=angely';
 
+    // если внутри Telegram WebApp
     if (tg && typeof tg.openTelegramLink === 'function') {
-      tg.openTelegramconst url = 'https://t.me/Tesei_Angels_bot?start=angely';
-
-if (tg && typeof tg.openLink === 'function') {
-  tg.openLink(url);
-} else {
-  window.location.href = url;
-}
-Link(url);
-    } else {
-      window.open(url, '_blank');
+      tg.openTelegramLink(url);
+      tg.close();
+      return;
     }
+
+    // запасной вариант
+    window.location.href = url;
   };
 }
 
