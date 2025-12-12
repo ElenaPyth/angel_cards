@@ -19,7 +19,7 @@ const $btnOpenFav = el('btn-open-fav');
 
 const $btnDraw = el('btn-draw');
 const $btnAgain = el('btn-again');
-const $btnSend = el('btn-send');
+const $btnPractice = el('btn-practice'); // новая кнопка практики
 const $btnShare = el('btn-share');
 
 const $btnBack = el('btn-back');
@@ -227,16 +227,17 @@ $btnOpenFav.onclick = () => renderList('fav');
 $btnHistory.onclick = () => renderList('history');
 
 /* НОВАЯ логика кнопки «Пройти бесплатную практику» */
-$btnSend.onclick = () => {
-  // Пусть бэк получает событие и сам запускает воронку по ключу «Ангелы»
-  if (!tg) return;
-  const payload = {
-    type: 'start_practice',
-    keyword: 'Ангелы'
+if ($btnPractice) {
+  $btnPractice.onclick = () => {
+    if (!tg) return;
+    const payload = {
+      action: 'practice',
+      text: 'Ангелы'
+    };
+    tg.sendData(JSON.stringify(payload));
+    tg.close();
   };
-  tg.sendData(JSON.stringify(payload));
-  tg.close();
-};
+}
 
 /* Поделиться */
 $btnShare.onclick = () => {
