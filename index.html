@@ -23,14 +23,10 @@
           Читая значение каждой карты, отмечай свои мысли и чувства.
         </p>
         <p class="hint">Нажми, чтобы вытянуть карту дня</p>
-
-        <!-- Сначала "Ангельская практика" (жёлтая), затем "Ангельские послания" (фиолетовая), затем Избранное -->
         <button id="btn-practice" class="btn btn-primary btn-lg">Ангельская практика</button>
-        <button id="btn-draw" class="btn btn-secondary btn-lg">Ангельские послания</button>
+        <button id="btn-draw" class="btn btn-lg">Ангельские послания</button>
         <button id="btn-fav-home" class="btn btn-lg">Избранное</button>
-
         <div class="home-actions">
-          <!-- Убрана инструкция -->
           <button id="btn-guide" class="btn pill">Как пользоваться картами</button>
           <button id="btn-help"  class="btn pill">Чем я могу помочь тебе</button>
         </div>
@@ -48,7 +44,9 @@
         <div class="actions">
           <button id="btn-again" class="btn btn-primary">Ещё раз</button>
           <button id="btn-open-fav" class="btn">Избранное</button>
+          <button id="btn-practice" class="btn btn-practice-hidden">Ангельская практика</button>
           <button id="btn-share" class="btn ghost">Поделиться</button>
+          <button id="btn-back-main" class="btn btn-primary">Назад</button>
         </div>
       </section>
 
@@ -86,16 +84,12 @@
       <button id="btn-close-guide" class="modal-x" aria-label="Закрыть">✕</button>
       <h3>Как пользоваться картами</h3>
       <div class="modal-body">
-        <p>Карты - безопасный способ настроиться на высшие силы и услышать подсказку. Выпавшая карта резонирует с твоим запросом, так работает притяжение.</p>
+        <p>Карты, безопасный способ настроиться на высшие силы и услышать подсказку. Выпавшая карта резонирует с твоим запросом, так работает притяжение.</p>
         <p>Когда стресс мешает слышать, карты обходят «шум» и помогают получить ясный ответ.</p>
-        <p>Ангелы рядом всегда, даже если ты их не замечаешь. Они уважают твою свободу воли, поэтому помощь приходит, когда ты просишь об этом.</p>
-        <p>Проси конкретно и коротко, будто вы одна команда. Так сигналы от высших сил доходят быстрее, а ответы легче распознать.</p>
-        <p>Когда просишь поддержки, жизнь становится легче, совпадения помогают, внутри спокойнее, появляется ясность следующего шага.</p>
-        <p><strong>Делай так:</strong> подумай о вопросе, попроси поддержки, вытяни карту. Читая значение, отмечай мысли и чувства, в них твой ответ и шаг к действию.</p>
+        <p><strong>Практика:</strong> подумай о вопросе, попроси поддержки, вытяни карту. Читая значение, отмечай мысли и чувства, в них твой ответ и шаг к действию.</p>
       </div>
     </div>
   </div>
-
   <div id="about-modal" class="modal hidden">
     <div class="modal-card">
       <button id="btn-close-about" class="modal-x" aria-label="Закрыть">✕</button>
@@ -105,7 +99,6 @@
       </div>
     </div>
   </div>
-
   <script src="./app.js"></script>
 </body>
 </html>
