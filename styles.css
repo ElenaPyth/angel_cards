@@ -197,3 +197,26 @@ h2{font-size:var(--fs-h2)}
 @media (min-width:768px){
   #card .card-wrap img, #card img#card-img{ max-height:68vh; }
 }
+.btn-primary {
+  background: #FFD903;
+  color: #2d1848;
+  font-weight: 600;
+}
+
+.btn-secondary {
+  background: #56307C;
+  color: #fff;
+  font-weight: 500;
+}
+
+.btn-lg {
+  padding: 1.2em 0;
+  font-size: 1.15em;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.home-actions .btn {
+  width: 100%;
+  margin-bottom: 12px;
+}
