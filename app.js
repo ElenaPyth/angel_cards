@@ -1,45 +1,36 @@
-/* ================= TELEGRAM INIT ================= */
+/* ================= SAFE TELEGRAM INIT ================= */
 
 let tg = null;
 
-if (window.Telegram && window.Telegram.WebApp) {
-  tg = window.Telegram.WebApp;
-  tg.ready();
-  tg.expand();
+try {
+  if (window.Telegram && window.Telegram.WebApp) {
+    tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+  }
+} catch (e) {
+  console.warn('Telegram WebApp not available');
 }
 
-/* ================= HELPERS ================= */
+/* ================= DOM HELPERS ================= */
 
 const el = (id) => document.getElementById(id);
 
-function openAngelPractice() {
-  const url = 'https://t.me/Tesei_Angels_bot?start=angely';
-
-  if (tg && typeof tg.openTelegramLink === 'function') {
-    tg.openTelegramLink(url);
-    tg.close();
-  } else {
-    window.location.href = url;
-  }
-}
-
-/* ================= DOM ================= */
+/* ================= DOM REFS ================= */
 
 const $home = el('home');
 const $card = el('card');
 const $list = el('list');
 
-const $btnDraw = el('btn-draw');               // Ангельские карты
-const $btnPractice = el('btn-practice');       // Ангельская практика (под картой)
-const $btnPracticeHome = el('btn-practice-home'); // ВТОРАЯ кнопка на главном экране
-
-const $btnAgain = el('btn-again');
-const $btnShare = el('btn-share');
-
+const $btnHistory = el('btn-history');
 const $btnFavTop = el('btn-fav');
 const $btnFavHome = el('btn-fav-home');
-const $btnHistory = el('btn-history');
 const $btnOpenFav = el('btn-open-fav');
+
+const $btnDraw = el('btn-draw');          // Ангельские послания
+const $btnPractice = el('btn-practice');  // Ангельская практика
+const $btnAgain = el('btn-again');
+const $btnShare = el('btn-share');
 
 const $btnBack = el('btn-back');
 const $btnClear = el('btn-clear');
@@ -50,6 +41,16 @@ const $msg = el('card-msg');
 
 const $listTitle = el('list-title');
 const $listWrap = el('list-wrap');
+
+const $btnGuide = el('btn-guide');
+const $btnHelp = el('btn-help');
+
+const $modalGuide = el('modal-guide');
+const $about = el('about-modal');
+
+const $btnCloseGuide = el('btn-close-guide');
+const $btnAbout = el('btn-about');
+const $btnCloseAbout = el('btn-close-about');
 
 const itemTpl = el('item-tpl');
 
@@ -101,7 +102,7 @@ const S = {
   }
 };
 
-/* ================= VIEW ================= */
+/* ================= HELPERS ================= */
 
 function show(view) {
   CURRENT_VIEW = view;
@@ -131,6 +132,7 @@ function renderCard(card, save = true) {
   LAST_CARD = card;
 
   $img.src = card.image;
+  $img.alt = card.title;
   $ttl.textContent = card.title;
   $msg.textContent = card.message;
 
@@ -181,25 +183,25 @@ function renderList(kind) {
 
 /* ================= EVENTS ================= */
 
-// Ангельские карты
-$btnDraw.textContent = 'Ангельские карты';
+// "Ангельская практика" (жёлтая)
+$btnPractice.onclick = () => {
+  const url = 'https://t.me/Tesei_Angels_bot?start=angely';
+  if (tg && typeof tg.openTelegramLink === 'function') {
+    tg.openTelegramLink(url);
+    if (tg.close) tg.close();
+  } else {
+    window.open(url, '_blank');
+  }
+};
+
+// "Ангельские послания" (фиолетовая)
 $btnDraw.onclick = () => {
   const card = pickRandom(LAST_CARD && LAST_CARD.id);
   if (card) renderCard(card);
 };
 
+// "Ещё раз"
 $btnAgain.onclick = $btnDraw.onclick;
-
-// Ангельская практика (обе кнопки)
-if ($btnPractice) {
-  $btnPractice.textContent = 'Ангельская практика';
-  $btnPractice.onclick = openAngelPractice;
-}
-
-if ($btnPracticeHome) {
-  $btnPracticeHome.textContent = 'Ангельская практика';
-  $btnPracticeHome.onclick = openAngelPractice;
-}
 
 // Избранное и история
 $btnFavTop.onclick = () => {
@@ -209,13 +211,28 @@ $btnFavTop.onclick = () => {
     renderList('fav');
   }
 };
-
 $btnFavHome.onclick = () => renderList('fav');
 $btnOpenFav.onclick = () => renderList('fav');
 $btnHistory.onclick = () => renderList('history');
 
-$btnBack.onclick = () => show('home');
+/* ================= SHARE ================= */
 
+$btnShare.onclick = () => {
+  if (!LAST_CARD) return;
+
+  const text = `${LAST_CARD.title}\n\n${LAST_CARD.message}`;
+
+  if (navigator.share) {
+    navigator.share({ text });
+  } else {
+    navigator.clipboard.writeText(text);
+    alert('Послание скопировано');
+  }
+};
+
+/* ================= NAV ================= */
+
+$btnBack.onclick = () => show('home');
 if ($btnClear) {
   $btnClear.onclick = () => {
     S.clearHistory();
@@ -223,12 +240,13 @@ if ($btnClear) {
   };
 }
 
-// Share
-$btnShare.onclick = () => {
-  if (!LAST_CARD) return;
-  navigator.clipboard.writeText(`${LAST_CARD.title}\n\n${LAST_CARD.message}`);
-  alert('Послание скопировано');
-};
+/* ================= MODALS ================= */
+
+$btnGuide.onclick = () => $modalGuide.classList.remove('hidden');
+$btnHelp.onclick = () => $about.classList.remove('hidden');
+$btnCloseGuide.onclick = () => $modalGuide.classList.add('hidden');
+$btnAbout.onclick = () => $about.classList.remove('hidden');
+$btnCloseAbout.onclick = () => $about.classList.add('hidden');
 
 /* ================= BOOT ================= */
 
@@ -236,8 +254,18 @@ $btnShare.onclick = () => {
   try {
     const res = await fetch('./deck.json?' + Date.now());
     DECK = await res.json();
-  } catch {
+  } catch (e) {
+    console.error(e);
     alert('Не удалось загрузить колоду');
   }
   show('home');
 })();
+
+/* ================= СТИЛИ ДЛЯ КНОПОК ================= */
+// Добавь в styles.css:
+
+// .btn-primary { background: #FFD903; color: #2d1848; }
+// .btn-secondary { background: #56307C; color: #fff; }
+// .btn-lg { padding: 1.2em 0; font-size: 1.15em; }
+// .btn { border-radius: 16px; font-weight: 500; }
+// .home-actions .btn { width: 100%; margin-bottom: 12px; }
