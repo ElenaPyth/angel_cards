@@ -260,4 +260,48 @@ h2{font-size:var(--fs-h2)}
   font-weight:600;
   border:none;
 }
+/* Плавающая кнопка "О проекте" */
+#floating-about-btn {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  z-index: 1001;
+  background: linear-gradient(180deg, #FFD903, #F59C1A);
+  color: #2d1848;
+  font-weight: 600;
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 6px 28px rgba(30,10,40,0.18);
+  padding: 16px 36px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: box-shadow .18s, background .16s, color .18s;
+  outline: none;
+}
+#floating-about-btn:hover {
+  background: linear-gradient(180deg, #FFE548, #FFC721);
+  color: #180835;
+  box-shadow: 0 10px 32px rgba(40,10,60,0.22);
+}
+#floating-about-btn:active {
+  background: linear-gradient(180deg, #FFD903, #F59C1A);
+  color: #180835;
+}
+@media (max-width: 520px) {
+  #floating-about-btn {
+    width: 96vw;
+    max-width: 360px;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 1em;
+    left: 2vw;
+    right: 2vw;
+    transform: none;
+  }
+}
+/* Кнопка только на главном экране */
+body:not(.home-view) #floating-about-btn {
+  display: none !important;
+}
 
