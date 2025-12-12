@@ -1,3 +1,5 @@
+/* ================= SAFE TELEGRAM INIT ================= */
+
 let tg = null;
 try {
   if (window.Telegram && window.Telegram.WebApp) {
@@ -9,24 +11,44 @@ try {
   console.warn('Telegram WebApp not available');
 }
 
+/* ================= DOM HELPERS ================= */
+
 const el = (id) => document.getElementById(id);
+
+/* ================= DOM REFS ================= */
 
 const $home = el('home');
 const $card = el('card');
 const $list = el('list');
+
 const $btnHistory = el('btn-history');
 const $btnFavTop = el('btn-fav');
 const $btnFavHome = el('btn-fav-home');
 const $btnOpenFav = el('btn-open-fav');
 
-const $btnDraw = el('btn-draw');            // Ангельские послания (фиолет)
-const $btnPractice = el('btn-practice');    // Ангельская практика (жёлтая)
+const $btnDraw = el('btn-draw');            // Ангельские послания
+const $btnPractice = el('btn-practice');    // Ангельская практика
 const $btnAgain = el('btn-again');
 const $btnShare = el('btn-share');
-const $btnBackMain = el('btn-back-main');   // Новая кнопка "Назад" в карточке
 
+const $btnBackMain = el('btn-back-main');   // Назад из карточки
 const $btnBack = el('btn-back');
 const $btnClear = el('btn-clear');
+
+// Модалки
+const $btnGuide = el('btn-guide');
+const $btnHelp = el('btn-help');
+const $modalGuide = el('modal-guide');
+const $modalHelp = el('help-modal');
+const $about = el('about-modal');
+
+// Закрывающие кресты
+const $btnCloseGuide = el('btn-close-guide');
+const $btnCloseHelp = el('btn-close-help');
+const $btnCloseAbout = el('btn-close-about');
+
+// Плавающая кнопка
+const $floatingAboutBtn = el('floating-about-btn');
 
 const $img = el('card-img');
 const $ttl = el('card-title');
@@ -35,21 +57,15 @@ const $msg = el('card-msg');
 const $listTitle = el('list-title');
 const $listWrap = el('list-wrap');
 
-const $btnGuide = el('btn-guide');
-const $btnHelp = el('btn-help');
-
-const $modalGuide = el('modal-guide');
-const $about = el('about-modal');
-
-const $btnCloseGuide = el('btn-close-guide');
-const $btnAbout = el('btn-about');
-const $btnCloseAbout = el('btn-close-about');
-
 const itemTpl = el('item-tpl');
+
+/* ================= STATE ================= */
 
 let DECK = [];
 let LAST_CARD = null;
 let CURRENT_VIEW = 'home';
+
+/* ================= STORAGE ================= */
 
 const S = {
   kHistory: 'cards_history_v1',
@@ -91,15 +107,30 @@ const S = {
   }
 };
 
+/* ================= VIEW SWITCH ================= */
+
 function show(view) {
   CURRENT_VIEW = view;
+
   $home.classList.add('hidden');
   $card.classList.add('hidden');
   $list.classList.add('hidden');
+
+  // Показываем нужный экран
   if (view === 'home') $home.classList.remove('hidden');
   if (view === 'card') $card.classList.remove('hidden');
   if (view === 'list') $list.classList.remove('hidden');
+
+  // Управляем появлением плавающей кнопки
+  if (view === 'home') {
+    $floatingAboutBtn.classList.remove('hidden');
+  } else {
+    $floatingAboutBtn.classList.add('hidden');
+  }
 }
+
+/* ================= HELPERS ================= */
+
 function pickRandom(exceptId) {
   if (!DECK.length) return null;
   let card;
@@ -108,12 +139,15 @@ function pickRandom(exceptId) {
   } while (DECK.length > 1 && card.id === exceptId);
   return card;
 }
+
 function renderCard(card, save = true) {
   LAST_CARD = card;
+
   $img.src = card.image;
   $img.alt = card.title;
   $ttl.textContent = card.title;
   $msg.textContent = card.message;
+
   if (save) {
     S.pushHistory({
       id: card.id,
@@ -122,22 +156,28 @@ function renderCard(card, save = true) {
       ts: Date.now()
     });
   }
+
   show('card');
 }
+
 function renderList(kind) {
   $listWrap.innerHTML = '';
+
   const data = S.read(kind === 'fav' ? S.kFav : S.kHistory);
   $listTitle.textContent = kind === 'fav' ? 'Избранное' : 'История';
 
   data.forEach(it => {
     const node = itemTpl.content.cloneNode(true);
     const root = node.querySelector('.item');
+
     root.onclick = () => {
       const card = DECK.find(c => String(c.id) === String(it.id));
       if (card) renderCard(card, false);
     };
+
     node.querySelector('.thumb').src = it.image;
     node.querySelector('.ttl').textContent = it.title;
+
     const delBtn = node.querySelector('.del');
     if (delBtn) {
       delBtn.classList.toggle('hidden', kind !== 'fav');
@@ -147,31 +187,37 @@ function renderList(kind) {
         renderList('fav');
       };
     }
+
     $listWrap.appendChild(node);
   });
 
   show('list');
 }
 
-// === Главная кнопка "Ангельская практика" ===
+/* ================= BUTTON ACTIONS ================= */
+
+// Ангельская практика (жёлтая кнопка)
 $btnPractice.onclick = () => {
   const url = 'https://t.me/Tesei_Angels_bot?start=angely';
+
   if (tg && typeof tg.openTelegramLink === 'function') {
     tg.openTelegramLink(url);
     tg.close();
     return;
   }
+
   window.location.href = url;
 };
 
-// === Главная кнопка "Ангельские послания" ===
+// Ангельские послания (фиолетовая)
 $btnDraw.onclick = () => {
   const card = pickRandom(LAST_CARD && LAST_CARD.id);
   if (card) renderCard(card);
 };
+
 $btnAgain.onclick = $btnDraw.onclick;
 
-// === Избранное и история ===
+// Избранное
 $btnFavTop.onclick = () => {
   if (CURRENT_VIEW === 'card' && LAST_CARD) {
     S.pushFav({ ...LAST_CARD, ts: Date.now() });
@@ -179,26 +225,16 @@ $btnFavTop.onclick = () => {
     renderList('fav');
   }
 };
+
 $btnFavHome.onclick = () => renderList('fav');
 $btnOpenFav.onclick = () => renderList('fav');
 $btnHistory.onclick = () => renderList('history');
 
-// === Новая кнопка "Назад" на карточке ===
+// Назад в главное меню
 $btnBackMain.onclick = () => show('home');
-
-// === Поделиться ===
-$btnShare.onclick = () => {
-  if (!LAST_CARD) return;
-  const text = `${LAST_CARD.title}\n\n${LAST_CARD.message}`;
-  if (navigator.share) {
-    navigator.share({ text });
-  } else {
-    navigator.clipboard.writeText(text);
-    alert('Послание скопировано');
-  }
-};
-
 $btnBack.onclick = () => show('home');
+
+// Очистить историю
 if ($btnClear) {
   $btnClear.onclick = () => {
     S.clearHistory();
@@ -206,11 +242,22 @@ if ($btnClear) {
   };
 }
 
+/* ================= MODALS ================= */
+
 $btnGuide.onclick = () => $modalGuide.classList.remove('hidden');
-$btnHelp.onclick = () => $about.classList.remove('hidden');
 $btnCloseGuide.onclick = () => $modalGuide.classList.add('hidden');
+
+$btnHelp.onclick = () => $modalHelp.classList.remove('hidden');
+$btnCloseHelp.onclick = () => $modalHelp.classList.add('hidden');
+
 $btnCloseAbout.onclick = () => $about.classList.add('hidden');
-$btnAbout.onclick = () => $about.classList.remove('hidden');
+
+/* === Плавающая кнопка "О проекте" === */
+$floatingAboutBtn.onclick = () => {
+  $about.classList.remove('hidden');
+};
+
+/* ================= BOOT ================= */
 
 (async function boot() {
   try {
@@ -220,5 +267,6 @@ $btnAbout.onclick = () => $about.classList.remove('hidden');
     console.error(e);
     alert('Не удалось загрузить колоду');
   }
+
   show('home');
 })();
